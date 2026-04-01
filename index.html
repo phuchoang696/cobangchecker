@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AE KBANG CHECKER - PRO CORE</title>
+    <style>
+        :root {
+            --bg-color: #0b101a; --card-bg: #121827; --pill-bg: #090e17; --border-dim: #1f2937;
+            --text-main: #f3f4f6; --text-muted: #6b7280; --glow-blue: #06b6d4; --glow-cyan: #3b82f6;
+            --glow-green: #10b981; --glow-purple: #a855f7; --glow-gold: #fbbf24; --fail-color: #ef4444;
+            --gauge-bg: #1e293b;
+        }
+        body { font-family: -apple-system, sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        .container { width: 100%; max-width: 500px; padding: 20px; box-sizing: border-box; padding-bottom: 90px; }
+        .profile-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; padding-top: 10px; }
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        .avatar { width: 40px; height: 40px; background: linear-gradient(135deg, var(--glow-blue), var(--glow-cyan)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; color: #fff; }
+        .user-name { font-weight: bold; font-size: 16px; margin: 0 0 2px 0; }
+        .tier-badge { background: rgba(255,255,255,0.1); color: #9ca3af; font-size: 10px; padding: 2px 6px; border-radius: 4px; display: inline-block; }
+        .right-badges { display: flex; gap: 8px; }
+        .small-badge { background: var(--card-bg); border: 1px solid var(--border-dim); padding: 4px 8px; border-radius: 8px; font-size: 12px; font-weight: bold; }
+        
+        .app-title { text-align: center; color: var(--glow-blue); font-size: 32px; font-weight: 900; margin: 10px 0; line-height: 1.2; text-shadow: 0 0 20px rgba(6, 182, 212, 0.3); }
+        .app-sub { text-align: center; color: #9ca3af; font-size: 13px; line-height: 1.5; margin-bottom: 30px;}
+        
+        /* 3 TABS THAY VÌ 2 */
+        .tab-container { display: flex; gap: 8px; margin-bottom: 25px; background: var(--card-bg); padding: 5px; border-radius: 14px; border: 1px solid var(--border-dim);}
+        .tab-btn { flex: 1; background: transparent; color: var(--text-muted); border: none; padding: 12px 0; border-radius: 10px; font-weight: bold; font-size: 13px; cursor: pointer; transition: 0.2s; }
+        .tab-btn.active { background: rgba(6, 182, 212, 0.15); color: var(--glow-blue); box-shadow: 0 0 10px rgba(6, 182, 212, 0.1); }
+
+        #tabMatrixContent, #tabSingleContent, #tabHistoryContent { display: none; flex-direction: column; animation: fadeIn 0.3s; }
+        
+        /* NÚT & TEXTAREA CŨ */
+        .btn-auto { background: linear-gradient(135deg, #10b981, #059669); color: white; font-weight: 900; padding: 16px; border: none; border-radius: 12px; width: 100%; cursor: pointer; margin-bottom: 15px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); font-size: 15px; transition: 0.2s;}
+        .btn-auto:active { transform: scale(0.98); }
+        #soVe { width: 100%; height: 80px; background: var(--card-bg); border: 1px dashed var(--border-dim); border-radius: 12px; padding: 15px; box-sizing: border-box; color: white; font-size: 14px; text-align: center; resize: none; outline: none; margin-bottom: 15px; display: none; }
+        .btn-action { background: linear-gradient(135deg, var(--glow-cyan), var(--glow-blue)); color: white; font-weight: bold; padding: 14px; border: none; border-radius: 10px; width: 100%; cursor: pointer; margin-bottom: 20px; display: none;}
+        
+        #matrixContainer { display: none; width: 100%; }
+        .matrix-board { background: var(--card-bg); border-radius: 16px; padding: 20px 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 25px; border: 1px solid var(--border-dim);}
+        .board-header { text-align: center; color: #60a5fa; font-weight: 900; font-size: 16px; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;}
+        .prize-row { display: flex; align-items: flex-start; border-bottom: 1px dashed rgba(255,255,255,0.05); padding: 10px 0; }
+        .prize-row:last-child { border-bottom: none; }
+        .prize-name { width: 65px; color: var(--text-muted); font-size: 12px; font-weight: 600; padding-top: 6px; }
+        .prize-numbers { flex: 1; display: flex; flex-wrap: wrap; gap: 6px; }
+        .pill { background: var(--pill-bg); border: 1px solid var(--border-dim); color: #d1d5db; font-family: monospace; font-weight: bold; font-size: 14px; padding: 5px 10px; border-radius: 20px; transition: 0.2s; }
+        .pill.vip { border-color: var(--glow-blue); color: #60a5fa; background: var(--vip-bg); box-shadow: 0 0 10px rgba(59, 130, 246, 0.2); cursor: pointer; }
+        .pill.vip:active { transform: scale(0.95); }
+
+        /* THỐNG KÊ STATION */
+        .station-stats-divider { border-top: 1px dashed rgba(255,255,255,0.1); margin-top: 15px; padding-top: 15px; }
+        .station-stats-title { color: #fbbf24; font-size: 12px; font-weight: 900; margin-bottom: 12px; text-transform: uppercase; text-align: center; letter-spacing: 1px;}
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .stat-item { background: rgba(0,0,0,0.3); border: 1px solid #334155; padding: 8px 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; }
+        .stat-item:active { transform: scale(0.95); border-color: var(--glow-blue); background: rgba(6, 182, 212, 0.1); }
+        .stat-name { color: #94a3b8; font-size: 11px; font-weight: 800; text-transform: uppercase; pointer-events: none; }
+        .stat-val { color: var(--glow-green); font-weight: 900; font-size: 12px; background: rgba(16, 185, 129, 0.1); padding: 2px 6px; border-radius: 6px; pointer-events: none;}
+        .no-vip-msg { color: #64748b; font-size: 12px; font-style: italic; text-align: center; width: 100%; padding: 5px 0;}
+
+        /* LÔ ĐẦU ĐUÔI TỔNG HỢP */
+        .summary-lo-box { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 15px; margin-top: 15px; border: 1px solid #334155;}
+        .lo-badge { display: inline-block; background: #451a03; border: 1px solid #b45309; color: #fbbf24; padding: 4px 8px; border-radius: 6px; font-size: 13px; font-weight: bold; margin: 3px; }
+        
+        /* QUÉT SỐ RIÊNG */
+        .single-input-wrapper { background: var(--card-bg); border-radius: 16px; padding: 30px 20px; text-align: center; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid var(--border-dim); }
+        .single-input { background: rgba(0,0,0,0.2); border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 12px; color: white; font-family: monospace; font-size: 36px; font-weight: bold; letter-spacing: 12px; width: 100%; text-align: center; padding: 15px 0; outline: none; box-sizing: border-box; box-shadow: inset 0 0 15px rgba(0,0,0,0.5); transition: 0.3s; }
+        .single-input:focus { border-color: var(--glow-blue); box-shadow: 0 0 15px rgba(6,182,212,0.2), inset 0 0 15px rgba(0,0,0,0.5); }
+        .input-status { color: var(--text-muted); font-size: 13px; margin-top: 15px; }
+
+        .gauge-container { background: var(--gauge-bg); border-radius: 10px; height: 12px; position: relative; overflow: hidden; margin: 15px 0; display: none; border: 1px solid rgba(255,255,255,0.1); }
+        .gauge-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #ef4444 0%, #fbbf24 50%, #10b981 100%); transition: width 0.5s ease-out; }
+        .gauge-text { color: var(--glow-green); font-weight: 900; font-size: 14px; text-transform: uppercase; margin-bottom: 10px; display: none; }
+
+        .rule-card { background: var(--card-bg); border: 1px solid var(--border-dim); border-radius: 12px; padding: 16px; margin-bottom: 12px; text-align: left; border-left: 4px solid var(--border-dim); }
+        .rule-card.matched { border-color: rgba(16, 185, 129, 0.3); border-left: 4px solid var(--glow-green); background: rgba(16, 185, 129, 0.03); }
+        .rule-header { display: flex; align-items: center; margin-bottom: 6px; }
+        .rule-title { color: white; font-weight: bold; font-size: 15px; }
+        .rule-badge { background: rgba(16, 185, 129, 0.15); color: var(--glow-green); font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 6px; margin-left: auto; text-transform: uppercase; }
+        .rule-desc { color: var(--text-muted); font-size: 13px; line-height: 1.4; }
+
+        /* LỊCH SỬ ĐEN TỐI */
+        .history-item { background: var(--card-bg); border: 1px solid var(--border-dim); border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .hist-num { font-family: monospace; font-size: 20px; font-weight: bold; color: white; letter-spacing: 2px;}
+        .hist-info { text-align: right; }
+        .hist-time { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+        .hist-tag { font-size: 11px; font-weight: bold; padding: 3px 6px; border-radius: 4px; display: inline-block; }
+        .tag-vip { background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid #c084fc; }
+        .tag-good { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #34d399; }
+        .tag-bad { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #f87171; }
+        .btn-clear-hist { background: transparent; border: 1px solid var(--fail-color); color: var(--fail-color); padding: 10px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; }
+
+        .bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #0d131f; border-top: 1px solid #1f2937; padding: 15px; display: flex; justify-content: center; z-index: 50; }
+        .bottom-bar-inner { width: 100%; max-width: 500px; display: flex; }
+        .btn-fail { width: 100%; background: var(--fail-color); color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 900; padding: 15px 0; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); cursor: pointer; transition: 0.2s;}
+        .btn-fail:active { transform: scale(0.98); }
+
+        /* MODALS & TOOLTIPS */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 1000; opacity: 0; transition: 0.3s; }
+        .modal-overlay.active { opacity: 1; }
+        .modal-content { background: var(--card-bg); border: 1px solid var(--fail-color); border-radius: 16px; padding: 25px; width: 90%; max-width: 350px; transform: scale(0.8); transition: 0.3s; text-align: center; }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        .modal-title-custom { color: var(--fail-color); font-size: 20px; font-weight: 900; margin: 0 0 10px 0; }
+        .modal-desc-custom { color: var(--text-main); font-size: 15px; margin-bottom: 25px; line-height: 1.5;}
+        .btn-close-modal { background:#1f2937; color: white; border: none; padding: 12px 0; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s;}
+        .btn-close-modal:active { transform: scale(0.98); }
+        
+        #vipListModal .modal-content { border-color: var(--glow-blue); box-shadow: 0 10px 30px rgba(6, 182, 212, 0.2); }
+        .vip-list-container { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 25px; }
+
+        .vip-tooltip { position: absolute; background: #1e293b; border: 1px solid var(--glow-blue); border-radius: 12px; padding: 12px 16px; width: 240px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); z-index: 100; display: none; text-align: center; opacity: 0; transition: opacity 0.2s; }
+        .vip-tooltip.active { opacity: 1; }
+        .tt-title { color: white; font-size: 13px; font-weight: bold; margin: 0 0 5px 0; }
+        .tt-desc { color: #cbd5e1; font-size: 12px; line-height: 1.4; margin: 0; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="profile-bar">
+            <div class="user-info">
+                <div class="avatar">VIP</div>
+                <div><p class="user-name">AE Kbang!</p><span class="tier-badge">PRO CORE TIER 💎</span></div>
+            </div>
+            <div class="right-badges"><div class="small-badge">🇻🇳 VN</div></div>
+        </div>
+
+        <h1 class="app-title">AE KBANG<br>CHECKER</h1>
+        <p class="app-sub">Hệ thống nhận diện phong thủy vé số. Nhập tay hoặc kéo data đài để soi.</p>
+
+        <div class="tab-container">
+            <button class="tab-btn active" id="btnTabSingle" onclick="switchTab('single')">Nhập Số</button>
+            <button class="tab-btn" id="btnTabMatrix" onclick="switchTab('matrix')">Bảng Đài</button>
+            <button class="tab-btn" id="btnTabHistory" onclick="switchTab('history')">Lịch Sử</button>
+        </div>
+
+        <div id="tabSingleContent" style="display: flex;">
+            <div class="single-input-wrapper">
+                <div class="gauge-text" id="gaugeText">Vé Rác</div>
+                <div class="gauge-container" id="gaugeBox"><div class="gauge-bar" id="gaugeFill"></div></div>
+
+                <input type="text" class="single-input" id="singleNumInput" maxlength="6" placeholder="000000" oninput="quetSoLe()" autocomplete="off">
+                <div class="input-status" id="singleStatus">Gõ 6 số vào đây để soi phong thủy</div>
+            </div>
+            <div id="singleRulesList"></div>
+        </div>
+
+        <div id="tabMatrixContent">
+            <button class="btn-auto" id="btnAutoFetch" onclick="autoFetchData()">🤖 TỰ ĐỘNG CÀO DATA XSMN</button>
+            <textarea id="soVe" placeholder="Dán dữ liệu XSMN hôm nay vào đây..."></textarea>
+            <button class="btn-action" id="btnAction" onclick="quetBangMatrix()">PHÂN TÍCH</button>
+            
+            <div id="matrixContainer"></div>
+        </div>
+
+        <div id="tabHistoryContent">
+            <div id="historyList"></div>
+            <button class="btn-clear-hist" onclick="clearHistory()" id="btnClearHist">XÓA LỊCH SỬ ĐEN TỐI</button>
+        </div>
+    </div>
+
+    <div id="vipTooltip" class="vip-tooltip">
+        <h4 class="tt-title" id="ttTitle">Title</h4>
+        <p class="tt-desc" id="ttDesc">Desc</p>
+    </div>
+
+    <div class="bottom-bar">
+        <div class="bottom-bar-inner">
+            <button class="btn-fail" onclick="showFailModal('Bình Tõm Bạn Ơi!!!', 'Lo gõ số đi ba, rảnh đâu đi kiện!')">MÃI ĐÉO THÀNH CÔNG</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="failModal" onclick="closeFailModal('failModal')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h3 class="modal-title-custom" id="modalAlertTitle">Bình Tõm Bạn Ơi!!!</h3>
+            <div class="modal-desc-custom" id="modalAlertDesc">Lo gõ số đi ba!</div>
+            <button class="btn-close-modal" onclick="closeFailModal('failModal')">OK ĐÃ HIỂU</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="vipListModal" onclick="closeFailModal('vipListModal')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h3 class="modal-title-custom" style="color: var(--glow-blue);" id="vipListTitle">VIP</h3>
+            <div class="vip-list-container" id="vipListDesc"></div>
+            <button class="btn-close-modal" style="background: linear-gradient(135deg, var(--glow-cyan), var(--glow-blue));" onclick="closeFailModal('vipListModal')">ĐÃ RÕ</button>
+        </div>
+    </div>
+
+<script>
+    // ====================================================
+    // TRÍ NHỚ & LỊCH SỬ HÀNG REAL
+    // ====================================================
+    let checkHistory = JSON.parse(localStorage.getItem('kbang_history')) || [];
+
+    function saveToCache(stationsData) {
+        const todayStr = new Date().toLocaleDateString('vi-VN', {timeZone: 'Asia/Ho_Chi_Minh'});
+        localStorage.setItem('kbang_xsmn_date', todayStr);
+        localStorage.setItem('kbang_xsmn_data', JSON.stringify(stationsData));
+    }
+
+    function loadFromCache() {
+        const todayStr = new Date().toLocaleDateString('vi-VN', {timeZone: 'Asia/Ho_Chi_Minh'});
+        const savedDate = localStorage.getItem('kbang_xsmn_date');
+        const savedDataStr = localStorage.getItem('kbang_xsmn_data');
+        if (savedDate === todayStr && savedDataStr) {
+            try {
+                const stationsData = JSON.parse(savedDataStr);
+                const btn = document.getElementById("btnAutoFetch");
+                btn.innerText = "✅ DATA ĐÃ LƯU TRONG MÁY";
+                btn.style.background = "linear-gradient(135deg, #0ea5e9, #0284c7)";
+                renderMatrixBoards(stationsData);
+                return true;
+            } catch(e) { return false; }
+        }
+        return false;
+    }
+
+    function saveHistory(num, score, title) {
+        // Đẩy số mới lên đầu mảng
+        const timeStr = new Date().toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+        checkHistory.unshift({ num, score, title, time: timeStr });
+        if(checkHistory.length > 20) checkHistory.pop(); // Lưu tối đa 20 vé gần nhất
+        localStorage.setItem('kbang_history', JSON.stringify(checkHistory));
+    }
+
+    function renderHistory() {
+        const listEl = document.getElementById('historyList');
+        const btnClear = document.getElementById('btnClearHist');
+        
+        if(checkHistory.length === 0) {
+            listEl.innerHTML = `<div style="text-align:center; color: var(--text-muted); font-size: 13px; margin-top:20px;">Chưa check tờ nào. Gõ số vào đi mậy!</div>`;
+            btnClear.style.display = 'none';
+            return;
+        }
+        
+        btnClear.style.display = 'block';
+        let html = '';
+        checkHistory.forEach(item => {
+            let tagClass = 'tag-bad';
+            if(item.score >= 75) tagClass = 'tag-vip';
+            else if(item.score >= 50) tagClass = 'tag-good';
+
+            html += `
+                <div class="history-item">
+                    <div class="hist-num">${item.num}</div>
+                    <div class="hist-info">
+                        <div class="hist-time">${item.time}</div>
+                        <div class="hist-tag ${tagClass}">${item.title}</div>
+                    </div>
+                </div>
+            `;
+        });
+        listEl.innerHTML = html;
+    }
+
+    function clearHistory() {
+        checkHistory = [];
+        localStorage.removeItem('kbang_history');
+        renderHistory();
+    }
+
+    window.onload = function() {
+        loadFromCache();
+        renderHistory();
+        document.getElementById("singleNumInput").focus();
+    };
+
+    const rulesConfig = [
+        { id: 'sanh', title: 'Sảnh Rồng', desc: 'Dòng khí mạch kết nối qua các con số liên tiếp.', failDesc: 'Chưa đủ điều kiện kết nối mạch số.' },
+        { id: 'amduong', title: 'Âm Dương', desc: 'Dãy số thuần chẵn/lẻ, tạo ra năng lượng nguyên thủy.', failDesc: 'Năng lượng Âm Dương đang hỗn loạn.' },
+        { id: 'tamtai', title: 'Tam Tài', desc: 'Cấu trúc lặp 3 số. Vòng lặp phong thủy khép kín.', failDesc: 'Chưa hình thành vòng lặp Tam Tài.' },
+        { id: 'donganh', title: 'Đòn Gánh', desc: 'Cấu trúc đối xứng. Trọng tâm vững chắc không phá vỡ.', failDesc: 'Trọng tâm phong thủy lệch trục.' },
+        { id: 'cuucung', title: 'Cửu Cung', desc: 'Số soi gương. Dòng năng lượng phản chiếu hai chiều.', failDesc: 'Không có sự phản chiếu Cửu Cung.' },
+        { id: 'tinhtu', title: 'Tinh Tú', desc: 'Cấu trúc lặp kép xen kẽ. Vì sao tâm linh đã xếp hàng.', failDesc: 'Các vì sao tâm linh phân tán.' },
+        { id: 'nguhanh', title: 'Ngũ Hành', desc: 'Quy luật toán học đặc biệt, thể hiện đẳng cấp vượt trội!', failDesc: 'Quy luật phong thủy Ngũ Hành chưa kích hoạt.' }
+    ];
+
+    function switchTab(tab) {
+        document.getElementById('btnTabSingle').classList.remove('active');
+        document.getElementById('btnTabMatrix').classList.remove('active');
+        document.getElementById('btnTabHistory').classList.remove('active');
+        document.getElementById('tabSingleContent').style.display = 'none';
+        document.getElementById('tabMatrixContent').style.display = 'none';
+        document.getElementById('tabHistoryContent').style.display = 'none';
+
+        if (tab === 'matrix') {
+            document.getElementById('btnTabMatrix').classList.add('active');
+            document.getElementById('tabMatrixContent').style.display = 'flex';
+        } else if (tab === 'history') {
+            document.getElementById('btnTabHistory').classList.add('active');
+            document.getElementById('tabHistoryContent').style.display = 'flex';
+            renderHistory();
+        } else {
+            document.getElementById('btnTabSingle').classList.add('active');
+            document.getElementById('tabSingleContent').style.display = 'flex';
+            document.getElementById("singleNumInput").focus();
+        }
+    }
+
+    async function autoFetchData() {
+        const btn = document.getElementById("btnAutoFetch");
+        btn.innerText = "⏳ ĐANG CÀO DATA NHÀ ĐÀI...";
+        btn.style.opacity = "0.7"; btn.style.pointerEvents = "none";
+
+        try {
+            const targetUrl = "https://xskt.com.vn/xsmn";
+            const proxyUrl = "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(targetUrl);
+            const response = await fetch(proxyUrl);
+            if (!response.ok) throw new Error("Cửa sau bị khóa");
+            
+            const htmlText = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlText, "text/html");
+            
+            const table = doc.getElementById('MN0') || doc.querySelector('table');
+            if(!table) throw new Error("Không tìm thấy bảng");
+
+            const trs = Array.from(table.querySelectorAll('tr'));
+            
+            let headerRowIdx = 0;
+            for(let i=0; i<trs.length; i++) {
+                if(trs[i].innerText.toLowerCase().includes('giải')) { headerRowIdx = i; break; }
+            }
+            
+            const headers = Array.from(trs[headerRowIdx].querySelectorAll('th, td')).map(el => el.innerText.trim()).filter(txt => txt && txt.toLowerCase() !== 'giải');
+            let stationsData = headers.map(name => ({ name: name, nums: [] }));
+            
+            for(let i = headerRowIdx + 1; i < trs.length; i++) {
+                const cells = Array.from(trs[i].querySelectorAll('td'));
+                if(cells.length > 1) {
+                    let dataCells = cells;
+                    if (cells.length > stationsData.length) { dataCells = cells.slice(1); } 
+                    else if (cells.length < stationsData.length) { continue; }
+
+                    dataCells.forEach((cell, index) => {
+                        if(stationsData[index]) {
+                            const cellNums = cell.innerText.match(/\b\d{2,6}\b/g) || [];
+                            stationsData[index].nums.push(...cellNums);
+                        }
+                    });
+                }
+            }
+            
+            document.getElementById("soVe").style.display = "none";
+            document.getElementById("btnAction").style.display = "none";
+            
+            saveToCache(stationsData);
+            renderMatrixBoards(stationsData);
+            btn.innerText = "✅ ĐÃ LẤY SỐ THÀNH CÔNG HÔM NAY";
+            
+        } catch (error) {
+            showFailModal("LỖI KẾT NỐI", "Mạng lag hoặc chặn IP. Mở ô dán tay lên rồi đó!");
+            btn.innerText = "🤖 THỬ LẠI: TỰ ĐỘNG LẤY SỐ";
+            document.getElementById("soVe").style.display = "block";
+            document.getElementById("btnAction").style.display = "block";
+        }
+        
+        btn.style.opacity = "1"; btn.style.pointerEvents = "auto";
+    }
+
+    function renderMatrixBoards(stationsArray) {
+        let finalHtml = '';
+        let globalTallyLo = {}; // Thống kê tất cả Lô đuôi hôm nay
+
+        stationsArray.forEach(station => {
+            let groups = { 'P. TÁM': [], 'P. BẢY': [], 'P. SÁU': [], 'P. NĂM': [], 'P. TƯ': [], 'P. BA': [], 'P. NHÌ': [], 'P. NHẤT': [], 'P. Đ.BIỆT': [] };
+            let localRuleTally = { sanh:[], amduong:[], tamtai:[], donganh:[], cuucung:[], tinhtu:[], nguhanh:[] };
+            
+            const validNums = station.nums.filter(n => !(n.length === 4 && n.startsWith('202')));
+            
+            // Ghi nhận Lô đuôi (2 số cuối) cho thống kê tổng
+            validNums.forEach(num => {
+                let lo = num.padStart(2, '0').slice(-2);
+                globalTallyLo[lo] = (globalTallyLo[lo] || 0) + 1;
+            });
+
+            const uniqueNums = [...new Set(validNums)];
+
+            uniqueNums.forEach(num => {
+                let len = num.length; let paddedNum = num.padStart(6, '0');
+                let matchedRules = Object.keys(phanTichSo(paddedNum).active);
+                let isVip = matchedRules.length > 0;
+                
+                matchedRules.forEach(r => { if(!localRuleTally[r].includes(paddedNum)) localRuleTally[r].push(paddedNum); });
+                
+                let rulesJson = isVip ? JSON.stringify(matchedRules).replace(/"/g, '&quot;') : '[]';
+                let eventTag = isVip ? `onclick="showTooltip(event, '${rulesJson}')"` : '';
+                let htmlPill = `<div class="pill ${isVip ? 'vip' : ''}" ${eventTag}>${paddedNum}</div>`;
+
+                if (len === 2) groups['P. TÁM'].push(htmlPill);
+                else if (len === 3) groups['P. BẢY'].push(htmlPill);
+                else if (len === 4) { if(groups['P. SÁU'].length < 3) groups['P. SÁU'].push(htmlPill); else groups['P. NĂM'].push(htmlPill); }
+                else if (len === 5) {
+                    if(groups['P. TƯ'].length < 7) groups['P. TƯ'].push(htmlPill);
+                    else if(groups['P. BA'].length < 2) groups['P. BA'].push(htmlPill);
+                    else if(groups['P. NHÌ'].length < 1) groups['P. NHÌ'].push(htmlPill);
+                    else groups['P. NHẤT'].push(htmlPill);
+                }
+                else if (len === 6) groups['P. Đ.BIỆT'].push(htmlPill);
+            });
+
+            let boardHtml = '';
+            for (const [prize, pills] of Object.entries(groups)) {
+                if (pills.length > 0) boardHtml += `<div class="prize-row"><div class="prize-name">${prize}</div><div class="prize-numbers">${pills.join('')}</div></div>`;
+            }
+
+            let ruleHtmlForStation = rulesConfig.map(r => {
+                let numsArray = localRuleTally[r.id];
+                if(numsArray && numsArray.length > 0) {
+                    let numsStr = numsArray.join(',');
+                    return `<div class="stat-item" onclick="showVipListModal('${r.title}', '${numsStr}')">
+                                <span class="stat-name">${r.title}</span><span class="stat-val">${numsArray.length} vé</span>
+                            </div>`;
+                }
+                return '';
+            }).join('');
+            
+            if(ruleHtmlForStation === '') { ruleHtmlForStation = `<div class="no-vip-msg">Không có vé VIP nào ở đài này.</div>`; } 
+            else { ruleHtmlForStation = `<div class="stat-grid">${ruleHtmlForStation}</div>`; }
+            
+            if (boardHtml !== '') {
+                finalHtml += `
+                    <div class="matrix-board">
+                        <div class="board-header">ĐÀI: ${station.name}</div>
+                        ${boardHtml}
+                        <div class="station-stats-divider">
+                            <div class="station-stats-title">🔥 BẢNG PHONG THẦN 🔥</div>
+                            ${ruleHtmlForStation}
+                        </div>
+                    </div>
+                `;
+            }
+        });
+
+        // TÍNH TOÁN LÔ NHIỀU NHẤT TRONG NGÀY HÔM NAY (TOP 5)
+        let sortedLo = Object.entries(globalTallyLo).sort((a,b) => b[1] - a[1]);
+        let topLoHtml = sortedLo.slice(0, 8).filter(item => item[1] > 1).map(item => `<span class="lo-badge">${item[0]} (${item[1]} nháy)</span>`).join('');
+        if(topLoHtml === '') topLoHtml = '<span style="color:#6b7280; font-size:13px;">Hôm nay phân tán, không có lô lặp lờ.</span>';
+
+        let thongKeLoHtml = `
+            <div class="summary-lo-box">
+                <div class="station-stats-title" style="color:var(--glow-cyan);">📊 THỐNG KÊ LÔ VỀ NHIỀU HÔM NAY</div>
+                <div style="text-align:center;">${topLoHtml}</div>
+            </div>
+        `;
+
+        const container = document.getElementById("matrixContainer");
+        container.innerHTML = thongKeLoHtml + finalHtml; 
+        container.style.display = "block";
+    }
+
+    // Biến debounce để tránh lưu lịch sử liên tục lúc đang gõ
+    let typingTimer;
+
+    function quetSoLe() {
+        let inputEl = document.getElementById("singleNumInput");
+        inputEl.value = inputEl.value.replace(/\D/g, ''); 
+        let num = inputEl.value; let statusEl = document.getElementById("singleStatus");
+        
+        const gaugeBox = document.getElementById("gaugeBox");
+        const gaugeFill = document.getElementById("gaugeFill");
+        const gaugeText = document.getElementById("gaugeText");
+
+        if (num.length < 6) { 
+            statusEl.innerText = "Gõ đủ 6 số nha..."; statusEl.style.color = "var(--text-muted)"; document.getElementById("singleRulesList").innerHTML = ""; 
+            gaugeBox.style.display = "none"; gaugeText.style.display = "none";
+            clearTimeout(typingTimer);
+            return; 
+        }
+
+        gaugeBox.style.display = "block"; gaugeText.style.display = "block";
+        statusEl.innerText = "Check xong! Coi bảng phong thủy ở dưới."; statusEl.style.color = "var(--glow-blue)";
+        
+        let resultObj = phanTichSo(num); 
+        let vipRulesCount = Object.keys(resultObj.active).length;
+        
+        let score = 0;
+        let pricingText = "Vé Rác";
+        if(vipRulesCount > 0) score = Math.min(vipRulesCount * 25, 95); 
+        if(resultObj.active.nguhanh) score = 99; 
+        
+        if(score >= 99) { pricingText = "💎 SIÊU VIP"; gaugeText.style.color = "var(--glow-purple)"; }
+        else if(score >= 75) { pricingText = "🔥 Cực Đẹp"; gaugeText.style.color = "var(--glow-green)"; }
+        else if(score >= 50) { pricingText = "✨ Đẹp"; gaugeText.style.color = "var(--glow-cyan)"; }
+        else { pricingText = "Vé Rác"; gaugeText.style.color = "var(--glow-gold)"; }
+        
+        gaugeText.innerText = pricingText;
+        gaugeFill.style.width = score + "%";
+
+        let rulesHtml = '';
+        rulesConfig.forEach(rule => {
+            let isMatched = resultObj.active[rule.id];
+            let cardClass = isMatched ? "rule-card matched" : "rule-card";
+            let badgeHtml = isMatched ? `<span class="rule-badge">Matched!</span>` : '';
+            let descText = isMatched ? rule.desc : rule.failDesc;
+            rulesHtml += `<div class="${cardClass}"><div class="rule-header"><span class="rule-title">${rule.title}</span>${badgeHtml}</div><div class="rule-desc">${descText}</div></div>`;
+        });
+        document.getElementById("singleRulesList").innerHTML = rulesHtml;
+
+        // Lưu lịch sử sau khi ngừng gõ 1.5 giây để tránh rác list
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(() => {
+            saveHistory(num, score, pricingText);
+        }, 1500);
+    }
+
+    function phanTichSo(strNum) {
+        let active = {}; let numbers = strNum.split('').map(Number);
+        let uniqueNums = [...new Set(numbers.filter(n => n !== 0))].sort((a, b) => a - b);
+        let maxSanh = 1, curr = 1;
+        for (let i = 1; i < uniqueNums.length; i++) { if (uniqueNums[i] === uniqueNums[i-1] + 1) { curr++; maxSanh = Math.max(maxSanh, curr); } else curr = 1; }
+        if (maxSanh >= 3) active['sanh'] = true;
+        if (numbers.every(n => n % 2 === 0) || numbers.every(n => n % 2 !== 0 || n === 0)) active['amduong'] = true;
+        if (strNum.substring(0, 3) === strNum.substring(3, 6)) active['tamtai'] = true;
+        if (strNum[0] === strNum[2] && strNum[3] === strNum[5]) active['donganh'] = true;
+        if (strNum === strNum.split('').reverse().join('')) active['cuucung'] = true;
+        if ((strNum[0] === strNum[1] && strNum[3] === strNum[4] && strNum[0] !== strNum[2]) || (strNum[1] === strNum[2] && strNum[4] === strNum[5] && strNum[0] !== strNum[1])) active['tinhtu'] = true;
+        for (let i = 0; i <= 2; i++) {
+            let so1 = parseInt(strNum.substring(i, i+2));
+            for (let j = i+2; j <= 4; j++) {
+                let so2 = parseInt(strNum.substring(j, j+2));
+                if (Math.abs(so1 - so2) === 10 || Math.abs(so1 - so2) === 11) { active['nguhanh'] = true; break; }
+            }
+            if(active['nguhanh']) break;
+        }
+        return { active };
+    }
+
+    function showTooltip(e, rulesJsonStr) {
+        e.stopPropagation(); 
+        let rulesArray = JSON.parse(rulesJsonStr);
+        let ruleData = rulesConfig.find(r => r.id === rulesArray[0]);
+
+        document.getElementById('ttTitle').innerText = ruleData.title;
+        document.getElementById('ttDesc').innerText = ruleData.desc;
+
+        const tt = document.getElementById('vipTooltip');
+        tt.style.display = 'block';
+
+        const rect = e.target.getBoundingClientRect();
+        let top = rect.top + window.scrollY - tt.offsetHeight - 10;
+        let left = rect.left + window.scrollX + (rect.width / 2) - (tt.offsetWidth / 2);
+
+        if (top < window.scrollY + 10) top = rect.bottom + window.scrollY + 10;
+        if (left < 10) left = 10;
+        if (left + tt.offsetWidth > window.innerWidth - 10) left = window.innerWidth - tt.offsetWidth - 10;
+
+        tt.style.top = top + 'px'; tt.style.left = left + 'px';
+        setTimeout(() => tt.classList.add('active'), 10);
+    }
+
+    document.addEventListener('click', (e) => {
+        const tt = document.getElementById('vipTooltip');
+        if (!e.target.classList.contains('vip')) { tt.classList.remove('active'); setTimeout(() => tt.style.display = 'none', 200); }
+    });
+
+    function showFailModal(title, desc, colorVar = "var(--fail-color)") {
+        const titleEl = document.getElementById('modalAlertTitle');
+        const descEl = document.getElementById('modalAlertDesc');
+        const modal = document.getElementById('failModal');
+
+        titleEl.innerText = title || "Bình Tõm Bạn Ơi!!!"; titleEl.style.color = colorVar;
+        descEl.innerText = desc || "Lỗi cmnr!"; descEl.style.color = "var(--text-main)";
+        modal.querySelector('.modal-content').style.borderColor = colorVar;
+        
+        modal.style.display = 'flex'; setTimeout(() => modal.classList.add('active'), 10);
+    }
+    
+    function closeFailModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.classList.remove('active'); setTimeout(() => modal.style.display = 'none', 300);
+    }
+
+    function showVipListModal(title, numsStr) {
+        document.getElementById('vipListTitle').innerText = "VÉ ĐẠT " + title.toUpperCase();
+        let numsArray = numsStr.split(',');
+        let pillsHtml = numsArray.map(n => `<div class="pill vip" style="cursor:default; transform:none;">${n}</div>`).join('');
+        document.getElementById('vipListDesc').innerHTML = pillsHtml;
+        const modal = document.getElementById('vipListModal');
+        modal.style.display = 'flex'; setTimeout(() => modal.classList.add('active'), 10);
+    }
+</script>
+
+</body>
+</html>
