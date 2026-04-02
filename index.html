@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>THẦN TÀI ĐÂU - SECRET ENGINE V17</title>
+    <title>THẦN TÀI ĐÂU - SECRET ENGINE V18</title>
     <style>
         :root {
             --bg-color: #0b101a; --card-bg: #121827; --pill-bg: #090e17; --border-dim: #1f2937;
@@ -78,12 +78,12 @@
         <div class="profile-bar">
             <div class="user-info">
                 <div class="avatar">VIP</div>
-                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V17 💎</span></div>
+                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V18 💎</span></div>
             </div>
         </div>
 
         <h1 class="app-title">THẦN TÀI<br>ĐÂU</h1>
-        <p class="app-sub">Hệ thống phân tích 9 quy luật phong thủy. (Tự động cào data chống nghẽn mạng).</p>
+        <p class="app-sub">Hệ thống phân tích 9 quy luật phong thủy. (Tích hợp Proxy Đa Tầng Cào Data).</p>
 
         <div class="tab-container">
             <button class="tab-btn active" id="btnTabSingle" onclick="switchTab('single')">Nhập Số</button>
@@ -102,8 +102,8 @@
         </div>
 
         <div id="tabMatrixContent">
-            <button class="btn-auto" id="btnAutoFetch" onclick="autoFetchData()">🤖 TỰ ĐỘNG CÀO DATA XSMN</button>
-            <textarea id="soVe" placeholder="Dán dữ liệu XSMN hôm nay vào đây nếu cào thất bại..."></textarea>
+            <button class="btn-auto" id="btnAutoFetch" onclick="autoFetchData()">🤖 TỰ ĐỘNG CÀO DATA 3 NGUỒN</button>
+            <textarea id="soVe" placeholder="Dán dữ liệu XSMN hôm nay vào đây nếu tự động thất bại..."></textarea>
             <button class="btn-action" id="btnAction" onclick="quetBangMatrix()">PHÂN TÍCH DATA</button>
             <div id="matrixContainer"></div>
         </div>
@@ -111,7 +111,7 @@
 
     <div class="bottom-bar">
         <div class="bottom-bar-inner">
-            <button class="btn-fail" onclick="location.reload()">MÃI ĐÉO THÀNH CÔNG (TẢI LẠI MẠNG)</button>
+            <button class="btn-fail" onclick="location.reload()">MÃI ĐÉO THÀNH CÔNG (TẢI LẠI TRANG)</button>
         </div>
     </div>
 
@@ -147,43 +147,57 @@
         }
     }
 
+    // ==========================================
+    // V18: CÀO DATA ĐA TẦNG (BẤT TỬ)
+    // ==========================================
     async function autoFetchData() {
         const btn = document.getElementById("btnAutoFetch");
-        btn.innerText = "⏳ ĐANG PHÁ TƯỜNG LỬA LẤY DATA (CHỜ 10S)...";
+        btn.innerText = "⏳ ĐANG PHÁ TƯỜNG LỬA (CHỜ TÍ MÁ)...";
         btn.style.opacity = "0.7"; btn.style.pointerEvents = "none";
 
-        const targetUrl = "https://xskt.com.vn/xsmn";
+        // Mảng 3 web xổ số lớn nhất
+        const targets = [
+            "https://xskt.com.vn/xsmn",
+            "https://xoso.com.vn/xsmn.html",
+            "https://xoso.me/xsmn-xo-so-mien-nam.html"
+        ];
         
-        // HỆ THỐNG PROXY BẠCH TUỘC ĐA XÚC TU
+        // Mảng proxy dự phòng
         const proxies = [
             { url: "https://api.allorigins.win/get?url=", type: "json" },
-            { url: "https://api.codetabs.com/v1/proxy?quest=", type: "text" },
-            { url: "https://corsproxy.io/?", type: "text" }
+            { url: "https://corsproxy.io/?", type: "text" },
+            { url: "https://api.codetabs.com/v1/proxy?quest=", type: "text" }
         ];
 
         let htmlText = null;
 
-        for (let proxy of proxies) {
-            try {
-                let res = await fetch(proxy.url + encodeURIComponent(targetUrl));
-                if (res.ok) { 
-                    if (proxy.type === "json") {
-                        let data = await res.json();
-                        htmlText = data.contents;
-                    } else {
-                        htmlText = await res.text(); 
+        // Chạy rà soát: Web 1 -> Proxy 1,2,3 -> Web 2 -> Proxy 1,2,3
+        outerLoop: for (let target of targets) {
+            for (let proxy of proxies) {
+                try {
+                    let res = await fetch(proxy.url + encodeURIComponent(target));
+                    if (res.ok) { 
+                        if (proxy.type === "json") {
+                            let data = await res.json();
+                            htmlText = data.contents;
+                        } else {
+                            htmlText = await res.text(); 
+                        }
+                        
+                        // Xác nhận lấy đúng html xổ số có chứa chữ 'giải 8' hoặc 'đặc biệt'
+                        let checkText = htmlText ? htmlText.toLowerCase() : "";
+                        if (checkText.includes('đặc biệt') || checkText.includes('giải 8') || checkText.includes('giải tám')) {
+                            break outerLoop; // Bùm! Lụm được hàng thì thoát hết vòng lặp
+                        }
                     }
-                    
-                    // Xác nhận lấy đúng html xổ số
-                    if (htmlText && htmlText.toLowerCase().includes('giải')) break; 
+                } catch(e) { 
+                    console.log("Cổng bị chặn, tự động đổi phương án..."); 
                 }
-            } catch(e) { 
-                console.log("Cổng proxy bị chặn, đang đổi cổng..."); 
             }
         }
 
-        if (!htmlText || !htmlText.toLowerCase().includes('giải')) {
-            alert("⚠️ Cả 4 Cổng Proxy đều bị nhà mạng chặn! Mày vui lòng vào web xskt.com.vn/xsmn copy bảng xổ số rồi DÁN TAY VÀO Ô nhé!");
+        if (!htmlText) {
+            alert("⚠️ Cả 9 phương án cào tự động đều bị nhà mạng chặn! Mày vui lòng vào web xskt.com.vn copy bảng kết quả rồi DÁN TAY VÀO Ô nhé!");
             btn.innerText = "🤖 THỬ CÀO LẠI DATA";
             document.getElementById("soVe").style.display = "block";
             document.getElementById("btnAction").style.display = "block";
@@ -192,38 +206,55 @@
         }
 
         try {
+            // Bộ bóc tách HTML phiên bản SIÊU THÔNG MINH (chơi được mọi web)
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlText, "text/html");
-            let table = doc.getElementById('MN0');
+            let table = null;
             
-            // Xử lý trường hợp trang web đổi ID bảng
-            if(!table) {
-                const tables = doc.querySelectorAll('table');
-                for(let t of tables) {
-                    if(t.innerText.includes('Đặc biệt') && t.innerText.includes('Giải tám')) {
-                        table = t; break;
-                    }
+            const tables = doc.querySelectorAll('table');
+            for(let t of tables) {
+                let txt = t.innerText.toLowerCase();
+                if((txt.includes('đặc biệt') || txt.includes('đb')) && (txt.includes('giải tám') || txt.includes('giải 8'))) {
+                    table = t; break;
                 }
             }
 
-            if(!table) throw new Error("Không tìm thấy bảng KQXS");
+            if(!table) throw new Error("Không tìm thấy cấu trúc bảng KQXS");
 
             const trs = Array.from(table.querySelectorAll('tr'));
-            let headerRowIdx = 0;
+            
+            // Tìm dòng chứa Giải 8
+            let g8RowIdx = -1;
             for(let i=0; i<trs.length; i++) {
-                if(trs[i].innerText.toLowerCase().includes('giải')) { headerRowIdx = i; break; }
+                let rowText = trs[i].innerText.toLowerCase();
+                if(rowText.includes('giải 8') || rowText.includes('giải tám') || rowText === '8') {
+                    g8RowIdx = i; break;
+                }
             }
             
-            const headers = Array.from(trs[headerRowIdx].querySelectorAll('th, td')).map(el => el.innerText.trim()).filter(txt => txt && txt.toLowerCase() !== 'giải');
+            // Dòng chứa tên tỉnh thường nằm ngay trên dòng Giải 8
+            let headerRowIdx = g8RowIdx > 0 ? g8RowIdx - 1 : 0;
+            
+            const headers = Array.from(trs[headerRowIdx].querySelectorAll('th, td'))
+                .map(el => el.innerText.trim())
+                .filter(txt => txt && !txt.toLowerCase().includes('giải') && !txt.toLowerCase().includes('tỉnh') && !txt.toLowerCase().includes('đài'));
+                
             let stationsData = headers.map(name => ({ name: name, nums: [] }));
             
-            for(let i = headerRowIdx + 1; i < trs.length; i++) {
+            // Quét từ dòng Giải 8 xuống dưới
+            for(let i = g8RowIdx; i < trs.length; i++) {
+                let rowText = trs[i].innerText.toLowerCase();
+                // Bỏ qua nếu dòng không chứa thông tin giải
+                if (!rowText.includes('giải') && !rowText.includes('đặc biệt') && !rowText.includes('đb') && !rowText.match(/^\d+$/)) continue; 
+                
                 const cells = Array.from(trs[i].querySelectorAll('td'));
                 if(cells.length > 1) {
-                    let dataCells = cells.length > stationsData.length ? cells.slice(1) : cells;
+                    // Ép lấy đúng số lượng cột của số lượng tỉnh (cắt bỏ cột "Giải" ở đầu)
+                    let dataCells = cells.length > stationsData.length ? cells.slice(-stationsData.length) : cells;
                     dataCells.forEach((cell, index) => {
                         if(stationsData[index]) {
-                            const cellNums = cell.innerText.match(/\b\d{2,6}\b/g) || [];
+                            // Lọc dấu chấm và lấy số
+                            const cellNums = cell.innerText.replace(/\./g,'').match(/\b\d{2,6}\b/g) || [];
                             stationsData[index].nums.push(...cellNums);
                         }
                     });
@@ -247,7 +278,6 @@
         btn.style.opacity = "1"; btn.style.pointerEvents = "auto";
     }
 
-    // Function hỗ trợ phân tích khi nhập tay (Paste)
     function quetBangMatrix() {
         let val = document.getElementById("soVe").value.trim().replace(/[.,]/g, '');
         const rawNums = val.match(/\b\d{2,6}\b/g);
@@ -332,7 +362,7 @@
         }
 
         gaugeBox.style.display = "block"; gaugeText.style.display = "block";
-        statusEl.innerText = "Đang chạy Thần Tài Engine V17..."; statusEl.style.color = "var(--glow-gold)";
+        statusEl.innerText = "Đang chạy Thần Tài Engine V18..."; statusEl.style.color = "var(--glow-gold)";
         
         let resultObj = phanTichSo(num); 
         let pObj = resultObj.active;
@@ -363,9 +393,6 @@
         document.getElementById("singleRulesList").innerHTML = rulesHtml;
     }
 
-    // ====================================================
-    // LÕI V17: BẢN GIỮ CHUẨN MỌI LOGIC V16
-    // ====================================================
     function phanTichSo(strNum) {
         let active = {};
         let len = strNum.length;
@@ -406,7 +433,7 @@
             if(evens === 3 && odds === 3) active['batquai'] = true;
         }
 
-        // 4. NGŨ HÀNH (+-1, 10, 11) -> TRÊN CỤM 2 SỐ
+        // 4. NGŨ HÀNH (+-1, 10, 11) TRÊN CỤM 2 SỐ
         let nguhanhMatched = false;
         if(len >= 4) {
             for(let i=0; i<=len-4; i++) {
