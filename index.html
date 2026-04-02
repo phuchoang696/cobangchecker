@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AE KBANG CHECKER - PRO CORE</title>
+    <title>AE KBANG CHECKER - SECRET ENGINE</title>
     <style>
         :root {
             --bg-color: #0b101a; --card-bg: #121827; --pill-bg: #090e17; --border-dim: #1f2937;
@@ -24,14 +24,12 @@
         .app-title { text-align: center; color: var(--glow-blue); font-size: 32px; font-weight: 900; margin: 10px 0; line-height: 1.2; text-shadow: 0 0 20px rgba(6, 182, 212, 0.3); }
         .app-sub { text-align: center; color: #9ca3af; font-size: 13px; line-height: 1.5; margin-bottom: 30px;}
         
-        /* 3 TABS THAY VÌ 2 */
         .tab-container { display: flex; gap: 8px; margin-bottom: 25px; background: var(--card-bg); padding: 5px; border-radius: 14px; border: 1px solid var(--border-dim);}
         .tab-btn { flex: 1; background: transparent; color: var(--text-muted); border: none; padding: 12px 0; border-radius: 10px; font-weight: bold; font-size: 13px; cursor: pointer; transition: 0.2s; }
         .tab-btn.active { background: rgba(6, 182, 212, 0.15); color: var(--glow-blue); box-shadow: 0 0 10px rgba(6, 182, 212, 0.1); }
 
         #tabMatrixContent, #tabSingleContent, #tabHistoryContent { display: none; flex-direction: column; animation: fadeIn 0.3s; }
         
-        /* NÚT & TEXTAREA CŨ */
         .btn-auto { background: linear-gradient(135deg, #10b981, #059669); color: white; font-weight: 900; padding: 16px; border: none; border-radius: 12px; width: 100%; cursor: pointer; margin-bottom: 15px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); font-size: 15px; transition: 0.2s;}
         .btn-auto:active { transform: scale(0.98); }
         #soVe { width: 100%; height: 80px; background: var(--card-bg); border: 1px dashed var(--border-dim); border-radius: 12px; padding: 15px; box-sizing: border-box; color: white; font-size: 14px; text-align: center; resize: none; outline: none; margin-bottom: 15px; display: none; }
@@ -48,7 +46,6 @@
         .pill.vip { border-color: var(--glow-blue); color: #60a5fa; background: var(--vip-bg); box-shadow: 0 0 10px rgba(59, 130, 246, 0.2); cursor: pointer; }
         .pill.vip:active { transform: scale(0.95); }
 
-        /* THỐNG KÊ STATION */
         .station-stats-divider { border-top: 1px dashed rgba(255,255,255,0.1); margin-top: 15px; padding-top: 15px; }
         .station-stats-title { color: #fbbf24; font-size: 12px; font-weight: 900; margin-bottom: 12px; text-transform: uppercase; text-align: center; letter-spacing: 1px;}
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -58,11 +55,9 @@
         .stat-val { color: var(--glow-green); font-weight: 900; font-size: 12px; background: rgba(16, 185, 129, 0.1); padding: 2px 6px; border-radius: 6px; pointer-events: none;}
         .no-vip-msg { color: #64748b; font-size: 12px; font-style: italic; text-align: center; width: 100%; padding: 5px 0;}
 
-        /* LÔ ĐẦU ĐUÔI TỔNG HỢP */
         .summary-lo-box { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 15px; margin-top: 15px; border: 1px solid #334155;}
         .lo-badge { display: inline-block; background: #451a03; border: 1px solid #b45309; color: #fbbf24; padding: 4px 8px; border-radius: 6px; font-size: 13px; font-weight: bold; margin: 3px; }
         
-        /* QUÉT SỐ RIÊNG */
         .single-input-wrapper { background: var(--card-bg); border-radius: 16px; padding: 30px 20px; text-align: center; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid var(--border-dim); }
         .single-input { background: rgba(0,0,0,0.2); border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 12px; color: white; font-family: monospace; font-size: 36px; font-weight: bold; letter-spacing: 12px; width: 100%; text-align: center; padding: 15px 0; outline: none; box-sizing: border-box; box-shadow: inset 0 0 15px rgba(0,0,0,0.5); transition: 0.3s; }
         .single-input:focus { border-color: var(--glow-blue); box-shadow: 0 0 15px rgba(6,182,212,0.2), inset 0 0 15px rgba(0,0,0,0.5); }
@@ -79,7 +74,6 @@
         .rule-badge { background: rgba(16, 185, 129, 0.15); color: var(--glow-green); font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 6px; margin-left: auto; text-transform: uppercase; }
         .rule-desc { color: var(--text-muted); font-size: 13px; line-height: 1.4; }
 
-        /* LỊCH SỬ ĐEN TỐI */
         .history-item { background: var(--card-bg); border: 1px solid var(--border-dim); border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         .hist-num { font-family: monospace; font-size: 20px; font-weight: bold; color: white; letter-spacing: 2px;}
         .hist-info { text-align: right; }
@@ -95,7 +89,6 @@
         .btn-fail { width: 100%; background: var(--fail-color); color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 900; padding: 15px 0; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); cursor: pointer; transition: 0.2s;}
         .btn-fail:active { transform: scale(0.98); }
 
-        /* MODALS & TOOLTIPS */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 1000; opacity: 0; transition: 0.3s; }
         .modal-overlay.active { opacity: 1; }
         .modal-content { background: var(--card-bg); border: 1px solid var(--fail-color); border-radius: 16px; padding: 25px; width: 90%; max-width: 350px; transform: scale(0.8); transition: 0.3s; text-align: center; }
@@ -122,13 +115,13 @@
         <div class="profile-bar">
             <div class="user-info">
                 <div class="avatar">VIP</div>
-                <div><p class="user-name">AE Kbang!</p><span class="tier-badge">PRO CORE TIER 💎</span></div>
+                <div><p class="user-name">AE Kbang!</p><span class="tier-badge">SECRET ENGINE V2 💎</span></div>
             </div>
             <div class="right-badges"><div class="small-badge">🇻🇳 VN</div></div>
         </div>
 
         <h1 class="app-title">AE KBANG<br>CHECKER</h1>
-        <p class="app-sub">Hệ thống nhận diện phong thủy vé số. Nhập tay hoặc kéo data đài để soi.</p>
+        <p class="app-sub">Hệ thống nhận diện phong thủy vé số theo công thức mật truyền.</p>
 
         <div class="tab-container">
             <button class="tab-btn active" id="btnTabSingle" onclick="switchTab('single')">Nhập Số</button>
@@ -142,7 +135,7 @@
                 <div class="gauge-container" id="gaugeBox"><div class="gauge-bar" id="gaugeFill"></div></div>
 
                 <input type="text" class="single-input" id="singleNumInput" maxlength="6" placeholder="000000" oninput="quetSoLe()" autocomplete="off">
-                <div class="input-status" id="singleStatus">Gõ 6 số vào đây để soi phong thủy</div>
+                <div class="input-status" id="singleStatus">Gõ 6 số vào đây để test Engine gốc</div>
             </div>
             <div id="singleRulesList"></div>
         </div>
@@ -151,7 +144,6 @@
             <button class="btn-auto" id="btnAutoFetch" onclick="autoFetchData()">🤖 TỰ ĐỘNG CÀO DATA XSMN</button>
             <textarea id="soVe" placeholder="Dán dữ liệu XSMN hôm nay vào đây..."></textarea>
             <button class="btn-action" id="btnAction" onclick="quetBangMatrix()">PHÂN TÍCH</button>
-            
             <div id="matrixContainer"></div>
         </div>
 
@@ -189,9 +181,6 @@
     </div>
 
 <script>
-    // ====================================================
-    // TRÍ NHỚ & LỊCH SỬ HÀNG REAL
-    // ====================================================
     let checkHistory = JSON.parse(localStorage.getItem('kbang_history')) || [];
 
     function saveToCache(stationsData) {
@@ -218,10 +207,9 @@
     }
 
     function saveHistory(num, score, title) {
-        // Đẩy số mới lên đầu mảng
         const timeStr = new Date().toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
         checkHistory.unshift({ num, score, title, time: timeStr });
-        if(checkHistory.length > 20) checkHistory.pop(); // Lưu tối đa 20 vé gần nhất
+        if(checkHistory.length > 20) checkHistory.pop(); 
         localStorage.setItem('kbang_history', JSON.stringify(checkHistory));
     }
 
@@ -268,13 +256,13 @@
     };
 
     const rulesConfig = [
-        { id: 'sanh', title: 'Sảnh Rồng', desc: 'Dòng khí mạch kết nối qua các con số liên tiếp.', failDesc: 'Chưa đủ điều kiện kết nối mạch số.' },
-        { id: 'amduong', title: 'Âm Dương', desc: 'Dãy số thuần chẵn/lẻ, tạo ra năng lượng nguyên thủy.', failDesc: 'Năng lượng Âm Dương đang hỗn loạn.' },
-        { id: 'tamtai', title: 'Tam Tài', desc: 'Cấu trúc lặp 3 số. Vòng lặp phong thủy khép kín.', failDesc: 'Chưa hình thành vòng lặp Tam Tài.' },
-        { id: 'donganh', title: 'Đòn Gánh', desc: 'Cấu trúc đối xứng. Trọng tâm vững chắc không phá vỡ.', failDesc: 'Trọng tâm phong thủy lệch trục.' },
-        { id: 'cuucung', title: 'Cửu Cung', desc: 'Số soi gương. Dòng năng lượng phản chiếu hai chiều.', failDesc: 'Không có sự phản chiếu Cửu Cung.' },
-        { id: 'tinhtu', title: 'Tinh Tú', desc: 'Cấu trúc lặp kép xen kẽ. Vì sao tâm linh đã xếp hàng.', failDesc: 'Các vì sao tâm linh phân tán.' },
-        { id: 'nguhanh', title: 'Ngũ Hành', desc: 'Quy luật toán học đặc biệt, thể hiện đẳng cấp vượt trội!', failDesc: 'Quy luật phong thủy Ngũ Hành chưa kích hoạt.' }
+        { id: 'sanh', title: 'Sảnh 3+', desc: 'Mạch khí kết nối, bỏ qua thứ tự, Joker 0 bù lỗ.', failDesc: 'Chưa đủ điều kiện kết nối mạch số.' },
+        { id: 'amduong', title: 'Âm Dương', desc: '5 số cuối thuần chẵn/lẻ (0 là Joker đa năng).', failDesc: 'Năng lượng Âm Dương đang hỗn loạn.' },
+        { id: 'nguhanh', title: 'Ngũ Hành', desc: 'Lệch 1, 10, 11 giữa 2 cặp kề nhau hoặc cách 1 số.', failDesc: 'Quy luật phong thủy Ngũ Hành chưa kích hoạt.' },
+        { id: 'tinhtu', title: 'Tinh Tú', desc: 'Cấu trúc aabxxy hoặc abbxyy.', failDesc: 'Các vì sao tâm linh phân tán.' },
+        { id: 'tamtai', title: 'Tam Tài', desc: 'Cấu trúc lặp ABCABC.', failDesc: 'Chưa hình thành vòng lặp Tam Tài.' },
+        { id: 'donganh', title: 'Đòn Gánh', desc: 'Cấu trúc ABAXYX đối xứng.', failDesc: 'Trọng tâm phong thủy lệch trục.' },
+        { id: 'cuucung', title: 'Cửu Cung', desc: 'Số soi gương 2 chiều hoàn hảo.', failDesc: 'Không có sự phản chiếu Cửu Cung.' }
     ];
 
     function switchTab(tab) {
@@ -362,7 +350,7 @@
 
     function renderMatrixBoards(stationsArray) {
         let finalHtml = '';
-        let globalTallyLo = {}; // Thống kê tất cả Lô đuôi hôm nay
+        let globalTallyLo = {}; 
 
         stationsArray.forEach(station => {
             let groups = { 'P. TÁM': [], 'P. BẢY': [], 'P. SÁU': [], 'P. NĂM': [], 'P. TƯ': [], 'P. BA': [], 'P. NHÌ': [], 'P. NHẤT': [], 'P. Đ.BIỆT': [] };
@@ -370,7 +358,6 @@
             
             const validNums = station.nums.filter(n => !(n.length === 4 && n.startsWith('202')));
             
-            // Ghi nhận Lô đuôi (2 số cuối) cho thống kê tổng
             validNums.forEach(num => {
                 let lo = num.padStart(2, '0').slice(-2);
                 globalTallyLo[lo] = (globalTallyLo[lo] || 0) + 1;
@@ -378,17 +365,18 @@
 
             const uniqueNums = [...new Set(validNums)];
 
+            // ENGINE MỚI: Truyền trực tiếp num (giữ nguyên độ dài 2-6), ĐÉO BƠM SỐ 0 NỮA
             uniqueNums.forEach(num => {
-                let len = num.length; let paddedNum = num.padStart(6, '0');
-                let matchedRules = Object.keys(phanTichSo(paddedNum).active);
+                let matchedRules = Object.keys(phanTichSo(num).active);
                 let isVip = matchedRules.length > 0;
                 
-                matchedRules.forEach(r => { if(!localRuleTally[r].includes(paddedNum)) localRuleTally[r].push(paddedNum); });
+                matchedRules.forEach(r => { if(!localRuleTally[r].includes(num)) localRuleTally[r].push(num); });
                 
                 let rulesJson = isVip ? JSON.stringify(matchedRules).replace(/"/g, '&quot;') : '[]';
                 let eventTag = isVip ? `onclick="showTooltip(event, '${rulesJson}')"` : '';
-                let htmlPill = `<div class="pill ${isVip ? 'vip' : ''}" ${eventTag}>${paddedNum}</div>`;
+                let htmlPill = `<div class="pill ${isVip ? 'vip' : ''}" ${eventTag}>${num}</div>`;
 
+                let len = num.length;
                 if (len === 2) groups['P. TÁM'].push(htmlPill);
                 else if (len === 3) groups['P. BẢY'].push(htmlPill);
                 else if (len === 4) { if(groups['P. SÁU'].length < 3) groups['P. SÁU'].push(htmlPill); else groups['P. NĂM'].push(htmlPill); }
@@ -434,7 +422,6 @@
             }
         });
 
-        // TÍNH TOÁN LÔ NHIỀU NHẤT TRONG NGÀY HÔM NAY (TOP 5)
         let sortedLo = Object.entries(globalTallyLo).sort((a,b) => b[1] - a[1]);
         let topLoHtml = sortedLo.slice(0, 8).filter(item => item[1] > 1).map(item => `<span class="lo-badge">${item[0]} (${item[1]} nháy)</span>`).join('');
         if(topLoHtml === '') topLoHtml = '<span style="color:#6b7280; font-size:13px;">Hôm nay phân tán, không có lô lặp lờ.</span>';
@@ -451,7 +438,6 @@
         container.style.display = "block";
     }
 
-    // Biến debounce để tránh lưu lịch sử liên tục lúc đang gõ
     let typingTimer;
 
     function quetSoLe() {
@@ -463,15 +449,15 @@
         const gaugeFill = document.getElementById("gaugeFill");
         const gaugeText = document.getElementById("gaugeText");
 
-        if (num.length < 6) { 
-            statusEl.innerText = "Gõ đủ 6 số nha..."; statusEl.style.color = "var(--text-muted)"; document.getElementById("singleRulesList").innerHTML = ""; 
+        if (num.length < 2) { 
+            statusEl.innerText = "Gõ vé vào đi ba..."; statusEl.style.color = "var(--text-muted)"; document.getElementById("singleRulesList").innerHTML = ""; 
             gaugeBox.style.display = "none"; gaugeText.style.display = "none";
             clearTimeout(typingTimer);
             return; 
         }
 
         gaugeBox.style.display = "block"; gaugeText.style.display = "block";
-        statusEl.innerText = "Check xong! Coi bảng phong thủy ở dưới."; statusEl.style.color = "var(--glow-blue)";
+        statusEl.innerText = "Đang chạy Engine gốc phân tích..."; statusEl.style.color = "var(--glow-blue)";
         
         let resultObj = phanTichSo(num); 
         let vipRulesCount = Object.keys(resultObj.active).length;
@@ -499,32 +485,122 @@
         });
         document.getElementById("singleRulesList").innerHTML = rulesHtml;
 
-        // Lưu lịch sử sau khi ngừng gõ 1.5 giây để tránh rác list
         clearTimeout(typingTimer);
         typingTimer = setTimeout(() => {
             saveHistory(num, score, pricingText);
         }, 1500);
     }
 
+    // ====================================================
+    // LÕI ENGINE PHONG THỦY HÀNG REAL TỪ BÍ KÍP CHỦ TỊCH
+    // ====================================================
     function phanTichSo(strNum) {
-        let active = {}; let numbers = strNum.split('').map(Number);
-        let uniqueNums = [...new Set(numbers.filter(n => n !== 0))].sort((a, b) => a - b);
-        let maxSanh = 1, curr = 1;
-        for (let i = 1; i < uniqueNums.length; i++) { if (uniqueNums[i] === uniqueNums[i-1] + 1) { curr++; maxSanh = Math.max(maxSanh, curr); } else curr = 1; }
-        if (maxSanh >= 3) active['sanh'] = true;
-        if (numbers.every(n => n % 2 === 0) || numbers.every(n => n % 2 !== 0 || n === 0)) active['amduong'] = true;
-        if (strNum.substring(0, 3) === strNum.substring(3, 6)) active['tamtai'] = true;
-        if (strNum[0] === strNum[2] && strNum[3] === strNum[5]) active['donganh'] = true;
-        if (strNum === strNum.split('').reverse().join('')) active['cuucung'] = true;
-        if ((strNum[0] === strNum[1] && strNum[3] === strNum[4] && strNum[0] !== strNum[2]) || (strNum[1] === strNum[2] && strNum[4] === strNum[5] && strNum[0] !== strNum[1])) active['tinhtu'] = true;
-        for (let i = 0; i <= 2; i++) {
-            let so1 = parseInt(strNum.substring(i, i+2));
-            for (let j = i+2; j <= 4; j++) {
-                let so2 = parseInt(strNum.substring(j, j+2));
-                if (Math.abs(so1 - so2) === 10 || Math.abs(so1 - so2) === 11) { active['nguhanh'] = true; break; }
-            }
-            if(active['nguhanh']) break;
+        let active = {};
+        let len = strNum.length;
+
+        // 1. SẢNH RỒNG (Bất chấp thứ tự, 0 là Joker đa năng)
+        let zeros = 0;
+        let digits = new Set();
+        for(let char of strNum) {
+            if(char === '0') zeros++;
+            else digits.add(parseInt(char));
         }
+        let sortedDigits = [...digits].sort((a,b) => a-b);
+        let maxSanh = 0;
+        if(sortedDigits.length > 0) {
+            for(let i=0; i<sortedDigits.length; i++) {
+                let currentZeros = zeros;
+                let currentLen = 1;
+                let expectedNext = sortedDigits[i] + 1;
+                for(let j=i+1; j<sortedDigits.length; j++) {
+                    let gap = sortedDigits[j] - expectedNext;
+                    if(gap === 0) {
+                        currentLen++;
+                        expectedNext++;
+                    } else if (gap > 0 && currentZeros >= gap) {
+                        currentZeros -= gap;
+                        currentLen += gap + 1;
+                        expectedNext = sortedDigits[j] + 1;
+                    } else {
+                        break;
+                    }
+                }
+                currentLen += currentZeros; // Dán số 0 còn dư vào đuôi sảnh
+                if(currentLen > maxSanh) maxSanh = currentLen;
+            }
+        } else if (zeros >= 3) {
+            maxSanh = zeros; // Toàn số 0 cũng tính sảnh nếu cần
+        }
+        // Đạt chuẩn sảnh từ 3 số trở lên
+        if(maxSanh >= 3) active['sanh'] = true;
+
+
+        // 2. ÂM DƯƠNG (Chỉ soi tối đa 5 số cuối, 0 làm chẵn lẻ gì cũng được)
+        let checkStr = len > 5 ? strNum.slice(-5) : strNum;
+        if(checkStr.length >= 3) { 
+            let isAllEven = true, isAllOdd = true;
+            for(let char of checkStr) {
+                let num = parseInt(char);
+                if(num !== 0) { // 0 auto qua ải
+                    if(num % 2 !== 0) isAllEven = false;
+                    if(num % 2 === 0) isAllOdd = false;
+                }
+            }
+            if(isAllEven || isAllOdd) active['amduong'] = true;
+        }
+
+
+        // 3. NGŨ HÀNH (+-1, +-10, +-11) - Cho phép liền kề hoặc cách 1 "số ẩn"
+        if(len >= 4) {
+            let nguhanhMatched = false;
+            for(let i=0; i<=len-4; i++) {
+                let so1 = parseInt(strNum.substring(i, i+2));
+                
+                // Trường hợp 1: 2 cặp số liền kề (ví dụ: 47-37)
+                let so2_adj = parseInt(strNum.substring(i+2, i+4));
+                let diff1 = Math.abs(so1 - so2_adj);
+                if(diff1 === 1 || diff1 === 10 || diff1 === 11) { nguhanhMatched = true; break; }
+                
+                // Trường hợp 2: Cách nhau 1 số ẩn (ví dụ: 35-5-46)
+                if(i+5 <= len) {
+                    let so2_sep = parseInt(strNum.substring(i+3, i+5));
+                    let diff2 = Math.abs(so1 - so2_sep);
+                    if(diff2 === 1 || diff2 === 10 || diff2 === 11) { nguhanhMatched = true; break; }
+                }
+            }
+            if(nguhanhMatched) active['nguhanh'] = true;
+        }
+
+
+        // 4. TAM TÀI (Vòng lặp ABCABC)
+        if(len === 6 && strNum.substring(0,3) === strNum.substring(3,6)) {
+            active['tamtai'] = true;
+        }
+
+        // 5. TINH TÚ (2 cặp số lặp bất kỳ không dính nhau)
+        if(len >= 4) {
+            let matchTinhTu = strNum.match(/(.)\1.*(.)\2/);
+            if(matchTinhTu && matchTinhTu[1] !== matchTinhTu[2]) {
+                active['tinhtu'] = true;
+            }
+        }
+
+        // 6. ĐÒN GÁNH (Chỉ xét cho vé 6 số form ABAXYX)
+        if(len === 6) {
+            let p1 = strNum.substring(0, 3);
+            let p2 = strNum.substring(3, 6);
+            if(p1[0] === p1[2] && p2[0] === p2[2]) {
+                active['donganh'] = true;
+            }
+        }
+
+        // 7. CỬU CUNG (Số soi gương nguyên dải)
+        if(len >= 4) {
+            if(strNum === strNum.split('').reverse().join('')) {
+                active['cuucung'] = true;
+            }
+        }
+
         return { active };
     }
 
