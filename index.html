@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AE KBANG CHECKER - SECRET ENGINE</title>
+    <title>AE KBANG CHECKER - SECRET ENGINE V3</title>
     <style>
         :root {
             --bg-color: #0b101a; --card-bg: #121827; --pill-bg: #090e17; --border-dim: #1f2937;
@@ -115,13 +115,13 @@
         <div class="profile-bar">
             <div class="user-info">
                 <div class="avatar">VIP</div>
-                <div><p class="user-name">AE Kbang!</p><span class="tier-badge">SECRET ENGINE V2 💎</span></div>
+                <div><p class="user-name">AE Kbang!</p><span class="tier-badge">SECRET ENGINE V3 💎</span></div>
             </div>
             <div class="right-badges"><div class="small-badge">🇻🇳 VN</div></div>
         </div>
 
         <h1 class="app-title">AE KBANG<br>CHECKER</h1>
-        <p class="app-sub">Hệ thống nhận diện phong thủy vé số theo công thức mật truyền.</p>
+        <p class="app-sub">Hệ thống nhận diện phong thủy vé số theo công thức mật truyền 100%.</p>
 
         <div class="tab-container">
             <button class="tab-btn active" id="btnTabSingle" onclick="switchTab('single')">Nhập Số</button>
@@ -135,7 +135,7 @@
                 <div class="gauge-container" id="gaugeBox"><div class="gauge-bar" id="gaugeFill"></div></div>
 
                 <input type="text" class="single-input" id="singleNumInput" maxlength="6" placeholder="000000" oninput="quetSoLe()" autocomplete="off">
-                <div class="input-status" id="singleStatus">Gõ 6 số vào đây để test Engine gốc</div>
+                <div class="input-status" id="singleStatus">Gõ số vào đây để soi theo bí kíp</div>
             </div>
             <div id="singleRulesList"></div>
         </div>
@@ -365,7 +365,6 @@
 
             const uniqueNums = [...new Set(validNums)];
 
-            // ENGINE MỚI: Truyền trực tiếp num (giữ nguyên độ dài 2-6), ĐÉO BƠM SỐ 0 NỮA
             uniqueNums.forEach(num => {
                 let matchedRules = Object.keys(phanTichSo(num).active);
                 let isVip = matchedRules.length > 0;
@@ -457,7 +456,7 @@
         }
 
         gaugeBox.style.display = "block"; gaugeText.style.display = "block";
-        statusEl.innerText = "Đang chạy Engine gốc phân tích..."; statusEl.style.color = "var(--glow-blue)";
+        statusEl.innerText = "Đang chạy Engine V3 phân tích..."; statusEl.style.color = "var(--glow-blue)";
         
         let resultObj = phanTichSo(num); 
         let vipRulesCount = Object.keys(resultObj.active).length;
@@ -492,114 +491,74 @@
     }
 
     // ====================================================
-    // LÕI ENGINE PHONG THỦY HÀNG REAL TỪ BÍ KÍP CHỦ TỊCH
+    // LÕI ENGINE PHONG THỦY V3 CHUẨN BÍ KÍP
     // ====================================================
     function phanTichSo(strNum) {
         let active = {};
         let len = strNum.length;
+        let paddedNum = len !== 6 ? strNum.padStart(6, '0') : strNum;
 
-        // 1. SẢNH RỒNG (Bất chấp thứ tự, 0 là Joker đa năng)
-        let zeros = 0;
-        let digits = new Set();
-        for(let char of strNum) {
-            if(char === '0') zeros++;
-            else digits.add(parseInt(char));
-        }
-        let sortedDigits = [...digits].sort((a,b) => a-b);
-        let maxSanh = 0;
-        if(sortedDigits.length > 0) {
-            for(let i=0; i<sortedDigits.length; i++) {
-                let currentZeros = zeros;
-                let currentLen = 1;
-                let expectedNext = sortedDigits[i] + 1;
-                for(let j=i+1; j<sortedDigits.length; j++) {
-                    let gap = sortedDigits[j] - expectedNext;
-                    if(gap === 0) {
-                        currentLen++;
-                        expectedNext++;
-                    } else if (gap > 0 && currentZeros >= gap) {
-                        currentZeros -= gap;
-                        currentLen += gap + 1;
-                        expectedNext = sortedDigits[j] + 1;
-                    } else {
-                        break;
-                    }
-                }
-                currentLen += currentZeros; // Dán số 0 còn dư vào đuôi sảnh
-                if(currentLen > maxSanh) maxSanh = currentLen;
+        // 1. SẢNH RỒNG (3 số liên tiếp, không dùng 0 bù lỗ)
+        let digits = [...new Set(strNum.split('').map(Number))].sort((a,b) => a-b);
+        let maxSanh = 1;
+        let curr = 1;
+        for(let i=1; i<digits.length; i++) {
+            if(digits[i] === digits[i-1] + 1) {
+                curr++;
+                if(curr > maxSanh) maxSanh = curr;
+            } else {
+                curr = 1;
             }
-        } else if (zeros >= 3) {
-            maxSanh = zeros; // Toàn số 0 cũng tính sảnh nếu cần
         }
-        // Đạt chuẩn sảnh từ 3 số trở lên
         if(maxSanh >= 3) active['sanh'] = true;
 
-
-        // 2. ÂM DƯƠNG (Chỉ soi tối đa 5 số cuối, 0 làm chẵn lẻ gì cũng được)
-        let checkStr = len > 5 ? strNum.slice(-5) : strNum;
-        if(checkStr.length >= 3) { 
-            let isAllEven = true, isAllOdd = true;
-            for(let char of checkStr) {
-                let num = parseInt(char);
-                if(num !== 0) { // 0 auto qua ải
-                    if(num % 2 !== 0) isAllEven = false;
-                    if(num % 2 === 0) isAllOdd = false;
-                }
+        // 2. ÂM DƯƠNG (Chỉ soi 5 số cuối, bỏ qua 0)
+        let checkStr = strNum.length > 5 ? strNum.slice(-5) : strNum;
+        let hasEven = false, hasOdd = false;
+        for(let char of checkStr) {
+            let num = parseInt(char);
+            if(num !== 0) {
+                if(num % 2 === 0) hasEven = true;
+                else hasOdd = true;
             }
-            if(isAllEven || isAllOdd) active['amduong'] = true;
+        }
+        // Đạt điều kiện nếu có số để xét, và thuần 1 hệ (không dính cả chẵn lẫn lẻ)
+        if((hasEven || hasOdd) && !(hasEven && hasOdd)) {
+            active['amduong'] = true;
         }
 
-
-        // 3. NGŨ HÀNH (+-1, +-10, +-11) - Cho phép liền kề hoặc cách 1 "số ẩn"
-        if(len >= 4) {
-            let nguhanhMatched = false;
-            for(let i=0; i<=len-4; i++) {
-                let so1 = parseInt(strNum.substring(i, i+2));
-                
-                // Trường hợp 1: 2 cặp số liền kề (ví dụ: 47-37)
-                let so2_adj = parseInt(strNum.substring(i+2, i+4));
-                let diff1 = Math.abs(so1 - so2_adj);
-                if(diff1 === 1 || diff1 === 10 || diff1 === 11) { nguhanhMatched = true; break; }
-                
-                // Trường hợp 2: Cách nhau 1 số ẩn (ví dụ: 35-5-46)
-                if(i+5 <= len) {
-                    let so2_sep = parseInt(strNum.substring(i+3, i+5));
-                    let diff2 = Math.abs(so1 - so2_sep);
-                    if(diff2 === 1 || diff2 === 10 || diff2 === 11) { nguhanhMatched = true; break; }
-                }
+        // 3. NGŨ HÀNH (+-1, 10, 11) - Liền kề hoặc cách 1 số ẩn
+        let nguhanhMatched = false;
+        for(let i=0; i<=len-4; i++) {
+            let so1 = parseInt(strNum.substring(i, i+2));
+            
+            // Xát liền kề (vd: 47-37)
+            let so2_adj = parseInt(strNum.substring(i+2, i+4));
+            let diff1 = Math.abs(so1 - so2_adj);
+            if(diff1 === 1 || diff1 === 10 || diff1 === 11) { nguhanhMatched = true; break; }
+            
+            // Cách 1 số (vd: 35-x-46)
+            if(i+5 <= len) {
+                let so2_sep = parseInt(strNum.substring(i+3, i+5));
+                let diff2 = Math.abs(so1 - so2_sep);
+                if(diff2 === 1 || diff2 === 10 || diff2 === 11) { nguhanhMatched = true; break; }
             }
-            if(nguhanhMatched) active['nguhanh'] = true;
         }
-
+        if(nguhanhMatched) active['nguhanh'] = true;
 
         // 4. TAM TÀI (Vòng lặp ABCABC)
-        if(len === 6 && strNum.substring(0,3) === strNum.substring(3,6)) {
-            active['tamtai'] = true;
-        }
+        if(paddedNum.substring(0,3) === paddedNum.substring(3,6)) active['tamtai'] = true;
 
-        // 5. TINH TÚ (2 cặp số lặp bất kỳ không dính nhau)
-        if(len >= 4) {
-            let matchTinhTu = strNum.match(/(.)\1.*(.)\2/);
-            if(matchTinhTu && matchTinhTu[1] !== matchTinhTu[2]) {
-                active['tinhtu'] = true;
-            }
-        }
+        // 5. TINH TÚ (aabxxy hoặc abbxyy)
+        let matchAABXXY = (paddedNum[0] === paddedNum[1] && paddedNum[3] === paddedNum[4]);
+        let matchABBXYY = (paddedNum[1] === paddedNum[2] && paddedNum[4] === paddedNum[5]);
+        if(matchAABXXY || matchABBXYY) active['tinhtu'] = true;
 
-        // 6. ĐÒN GÁNH (Chỉ xét cho vé 6 số form ABAXYX)
-        if(len === 6) {
-            let p1 = strNum.substring(0, 3);
-            let p2 = strNum.substring(3, 6);
-            if(p1[0] === p1[2] && p2[0] === p2[2]) {
-                active['donganh'] = true;
-            }
-        }
+        // 6. ĐÒN GÁNH (ABAXYX)
+        if(paddedNum[0] === paddedNum[2] && paddedNum[3] === paddedNum[5]) active['donganh'] = true;
 
         // 7. CỬU CUNG (Số soi gương nguyên dải)
-        if(len >= 4) {
-            if(strNum === strNum.split('').reverse().join('')) {
-                active['cuucung'] = true;
-            }
-        }
+        if(len >= 4 && strNum === strNum.split('').reverse().join('')) active['cuucung'] = true;
 
         return { active };
     }
