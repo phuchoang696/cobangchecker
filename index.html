@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>THẦN TÀI ĐÂU - SECRET ENGINE V9</title>
+    <title>THẦN TÀI ĐÂU - SECRET ENGINE V10</title>
     <style>
         :root {
             --bg-color: #0b101a; --card-bg: #121827; --pill-bg: #090e17; --border-dim: #1f2937;
@@ -43,8 +43,9 @@
         .prize-name { width: 65px; color: var(--text-muted); font-size: 12px; font-weight: 600; padding-top: 6px; }
         .prize-numbers { flex: 1; display: flex; flex-wrap: wrap; gap: 6px; }
         
+        /* CHỈ NHỮNG VÉ SIÊU ĐẲNG CẤP MỚI ĐƯỢC KÍCH HOẠT HIỆU ỨNG NÀY */
         .pill { background: var(--pill-bg); border: 1px solid var(--border-dim); color: #d1d5db; font-family: monospace; font-weight: bold; font-size: 14px; padding: 5px 10px; border-radius: 20px; transition: 0.2s; }
-        .pill.vip { border-color: var(--glow-blue); color: #60a5fa; background: rgba(59, 130, 246, 0.1); box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); cursor: pointer; }
+        .pill.vip { border-color: var(--glow-blue); color: #60a5fa; background: rgba(59, 130, 246, 0.1); box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); cursor: pointer; }
         .pill.vip:active { transform: scale(0.95); }
 
         .single-input-wrapper { background: var(--card-bg); border-radius: 16px; padding: 30px 20px; text-align: center; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid var(--border-dim); }
@@ -78,12 +79,12 @@
         <div class="profile-bar">
             <div class="user-info">
                 <div class="avatar">VIP</div>
-                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V9 💎</span></div>
+                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V10 💎</span></div>
             </div>
         </div>
 
         <h1 class="app-title">THẦN TÀI<br>ĐÂU</h1>
-        <p class="app-sub">Hệ thống phân tích 9 quy luật phong thủy KHỚP 100% APP GỐC.</p>
+        <p class="app-sub">Hệ thống phân tích 9 quy luật phong thủy. Khóa bảng đài siêu khắt khe.</p>
 
         <div class="tab-container">
             <button class="tab-btn active" id="btnTabSingle" onclick="switchTab('single')">Nhập Số</button>
@@ -120,12 +121,12 @@
         { id: 'sanh', title: 'Law of Ascension', desc: 'Mạch khí kết nối sảnh 3+. Số 0 làm Joker.', failDesc: 'Chưa đủ điều kiện kết nối mạch số.' },
         { id: 'amduong', title: 'Yin-Yang Harmony', desc: '5 số cuối thuần chẵn/lẻ.', failDesc: 'Năng lượng Âm Dương đang hỗn loạn.' },
         { id: 'batquai', title: 'Bagua Trigram Resonance', desc: 'Tỉ lệ Thái Cực cân bằng: 3 Chẵn - 3 Lẻ.', failDesc: 'Sóng năng lượng chưa đạt độ cân bằng.' },
-        { id: 'tamtai', title: 'Trinity Recurrence', desc: 'Cấu trúc lặp ABCABC.', failDesc: 'Chưa hình thành vòng lặp Tam Tài.' },
-        { id: 'tinhtu', title: 'Twin Star Alignment', desc: 'Cấu trúc AABXXY hoặc ABBXYY.', failDesc: 'Các vì sao tâm linh phân tán.' },
-        { id: 'donganh', title: 'Shoulder Pole of Blessing', desc: 'Cấu trúc ABAXYX đối xứng.', failDesc: 'Trọng tâm phong thủy lệch trục.' },
-        { id: 'cuucung', title: 'Nine Palaces Reflection', desc: 'Số soi gương 2 chiều hoàn hảo.', failDesc: 'Không có sự phản chiếu Cửu Cung.' },
+        { id: 'tamtai', title: 'Trinity Recurrence (VIP)', desc: 'Cấu trúc lặp ABCABC.', failDesc: 'Chưa hình thành vòng lặp Tam Tài.' },
+        { id: 'tinhtu', title: 'Twin Star Alignment (VIP)', desc: 'Cấu trúc AABXXY hoặc ABBXYY.', failDesc: 'Các vì sao tâm linh phân tán.' },
+        { id: 'donganh', title: 'Shoulder Pole (VIP)', desc: 'Cấu trúc ABAXYX đối xứng.', failDesc: 'Trọng tâm phong thủy lệch trục.' },
+        { id: 'cuucung', title: 'Nine Palaces (VIP)', desc: 'Số soi gương 2 chiều hoàn hảo.', failDesc: 'Không có sự phản chiếu Cửu Cung.' },
         { id: 'nguhanh', title: 'Five Elements Synergy (VIP)', desc: 'Cặp 2 số lệch +-1, 10, 11 kề nhau.', failDesc: 'Chưa kích hoạt cấu trúc Ngũ Hành.' },
-        { id: 'thandinh', title: 'Deity\'s Convergence', desc: 'Chứa luồng số Thần Tài (39, 79, 68, 86).', failDesc: 'Luồng số phân tán, chưa tụ Thần Dinh.' }
+        { id: 'thandinh', title: 'Deity\'s Convergence (VIP)', desc: 'Chứa luồng số Thần Tài (39, 79, 68, 86).', failDesc: 'Luồng số phân tán, chưa tụ Thần Dinh.' }
     ];
 
     function switchTab(tab) {
@@ -227,8 +228,13 @@
             uniqueNums.forEach(num => {
                 let paddedNum = num.padStart(6, '0');
                 
-                let matchedRules = Object.keys(phanTichSo(paddedNum).active);
-                let isVip = matchedRules.length > 0;
+                // CHỈ PHÁT SÁNG VIP NẾU ĐẠT CÁC LUẬT ĐẲNG CẤP (KHÔNG TÍNH SẢNH, ÂM DƯƠNG, BÁT QUÁI DỄ DÃI)
+                let pObj = phanTichSo(paddedNum).active;
+                let isVip = false;
+                if(pObj.nguhanh || pObj.tamtai || pObj.tinhtu || pObj.donganh || pObj.cuucung || pObj.thandinh) {
+                    isVip = true;
+                }
+
                 let htmlPill = `<div class="pill ${isVip ? 'vip' : ''}">${paddedNum}</div>`;
 
                 let len = num.length;
@@ -273,27 +279,30 @@
         }
 
         gaugeBox.style.display = "block"; gaugeText.style.display = "block";
-        statusEl.innerText = "Đang chạy Thần Tài Engine V9..."; statusEl.style.color = "var(--glow-gold)";
+        statusEl.innerText = "Đang chạy Thần Tài Engine V10..."; statusEl.style.color = "var(--glow-gold)";
         
         let paddedNum = num.padStart(6, '0');
         let resultObj = phanTichSo(paddedNum); 
-        let vipRulesCount = Object.keys(resultObj.active).length;
+        let pObj = resultObj.active;
+        let vipRulesCount = Object.keys(pObj).length;
         
+        let isSuperVip = (pObj.nguhanh || pObj.tamtai || pObj.tinhtu || pObj.donganh || pObj.cuucung || pObj.thandinh);
+
         let score = 0;
-        if(vipRulesCount > 0) score = Math.min(vipRulesCount * 20, 95); 
-        if(resultObj.active.nguhanh) score = 99; 
+        if(vipRulesCount > 0) score = Math.min(vipRulesCount * 15, 80); 
+        if(isSuperVip) score = 99; 
         
         let pricingText = "Vé Rác";
         if(score >= 99) { pricingText = "💎 SIÊU VIP (VÔ GIÁ)"; gaugeText.style.color = "var(--glow-purple)"; }
         else if(score >= 60) { pricingText = "🔥 Cực Đẹp"; gaugeText.style.color = "var(--glow-green)"; }
-        else if(score >= 40) { pricingText = "✨ Tốt"; gaugeText.style.color = "var(--glow-cyan)"; }
+        else if(score > 0) { pricingText = "✨ Tốt"; gaugeText.style.color = "var(--glow-cyan)"; }
         else { pricingText = "Vé Thường"; gaugeText.style.color = "var(--glow-gold)"; }
         
         gaugeText.innerText = pricingText; gaugeFill.style.width = score + "%";
 
         let rulesHtml = '';
         rulesConfig.forEach(rule => {
-            let isMatched = resultObj.active[rule.id];
+            let isMatched = pObj[rule.id];
             let cardClass = isMatched ? "rule-card matched" : "rule-card";
             let badgeHtml = isMatched ? `<span class="rule-badge">Matched!</span>` : '';
             let descText = isMatched ? rule.desc : rule.failDesc;
@@ -303,7 +312,7 @@
     }
 
     // ====================================================
-    // LÕI ENGINE V9: CHÂN KINH TUYỆT ĐỐI (KHỚP APP ĐỐI THỦ 100%)
+    // LÕI ENGINE V10: CHÂN KINH TUYỆT ĐỐI KHÔNG SẠN
     // ====================================================
     function phanTichSo(strNum) {
         let active = {};
@@ -352,9 +361,15 @@
             if(evens === 3 && odds === 3) active['batquai'] = true;
         }
 
-        // 4. NGŨ HÀNH (KHẮT KHE: +-1, 10, 11 CHỈ TÍNH TRÊN CẶP 2 SỐ)
+        // 4. NGŨ HÀNH (KHẮT KHE: +-1, 10, 11)
         let nguhanhMatched = false;
-        if(len >= 4) {
+        
+        for(let i=0; i<len-1; i++) {
+            if(Math.abs(parseInt(strNum[i]) - parseInt(strNum[i+1])) === 1) {
+                nguhanhMatched = true; break;
+            }
+        }
+        if(!nguhanhMatched && len >= 4) {
             for(let i=0; i<=len-4; i++) {
                 let n1 = parseInt(strNum.substring(i, i+2));
                 let n2_adj = parseInt(strNum.substring(i+2, i+4)); // Cặp liền kề
