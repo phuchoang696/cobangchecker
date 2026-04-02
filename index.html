@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>THẦN TÀI ĐÂU - SECRET ENGINE V20</title>
+    <title>THẦN TÀI ĐÂU - SECRET ENGINE V21</title>
     <style>
         :root {
             --bg-color: #0b101a; --card-bg: #121827; --pill-bg: #090e17; --border-dim: #1f2937;
@@ -18,6 +18,8 @@
         .avatar { width: 40px; height: 40px; background: linear-gradient(135deg, var(--glow-gold), #b45309); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; color: #fff; }
         .user-name { font-weight: bold; font-size: 16px; margin: 0 0 2px 0; }
         .tier-badge { background: rgba(255,255,255,0.1); color: #9ca3af; font-size: 10px; padding: 2px 6px; border-radius: 4px; display: inline-block; }
+        .right-badges { display: flex; gap: 8px; }
+        .small-badge { background: var(--card-bg); border: 1px solid var(--border-dim); padding: 4px 8px; border-radius: 8px; font-size: 12px; font-weight: bold; }
         
         .app-title { text-align: center; color: var(--glow-gold); font-size: 32px; font-weight: 900; margin: 10px 0; line-height: 1.2; text-shadow: 0 0 20px rgba(251, 191, 36, 0.3); }
         .app-sub { text-align: center; color: #9ca3af; font-size: 13px; line-height: 1.5; margin-bottom: 30px;}
@@ -76,12 +78,12 @@
         <div class="profile-bar">
             <div class="user-info">
                 <div class="avatar">VIP</div>
-                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V20 💎</span></div>
+                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V21 💎</span></div>
             </div>
         </div>
 
         <h1 class="app-title">THẦN TÀI<br>ĐÂU</h1>
-        <p class="app-sub">Phân tích 9 quy luật phong thủy. (Tích hợp Radar RSS chống Tường Lửa).</p>
+        <p class="app-sub">Phân tích 9 quy luật phong thủy. (Anti-Treo / Bom Hẹn Giờ 5s).</p>
 
         <div class="tab-container">
             <button class="tab-btn active" id="btnTabSingle" onclick="switchTab('single')">Nhập Số</button>
@@ -100,7 +102,7 @@
         </div>
 
         <div id="tabMatrixContent">
-            <button class="btn-auto" id="btnAutoFetch" onclick="autoFetchData()">🤖 TỰ ĐỘNG CÀO DATA XSMN (RADAR)</button>
+            <button class="btn-auto" id="btnAutoFetch" onclick="autoFetchData()">🤖 TỰ ĐỘNG CÀO DATA XSMN</button>
             <textarea id="soVe" placeholder="Dán dữ liệu XSMN hôm nay vào đây nếu cào thất bại..."></textarea>
             <button class="btn-action" id="btnAction" onclick="quetBangMatrix()">PHÂN TÍCH DATA</button>
             <div id="matrixContainer"></div>
@@ -146,15 +148,29 @@
     }
 
     // ==========================================
-    // V20: ĐỘT PHÁ TƯỜNG LỬA BẰNG KÊNH RSS XML
+    // V21: CÀO DATA CÓ BOM HẸN GIỜ (CHỐNG TREO)
     // ==========================================
+    
+    // Hàm fetch tùy chỉnh: Giết chết request nếu proxy ngâm quá 5 giây
+    async function fetchWithTimeout(resource, options = {}) {
+        const { timeout = 5000 } = options; // Cứ 5 giây đéo load được là giết
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), timeout);
+        try {
+            const response = await fetch(resource, { ...options, signal: controller.signal });
+            clearTimeout(id);
+            return response;
+        } catch (error) {
+            clearTimeout(id);
+            throw error;
+        }
+    }
+
     async function autoFetchData() {
         const btn = document.getElementById("btnAutoFetch");
-        btn.innerText = "⏳ ĐANG QUÉT RADAR RSS (CHỜ TÍ)...";
+        btn.innerText = "⏳ ĐANG QUÉT RADAR (TỐI ĐA 15S)...";
         btn.style.opacity = "0.7"; btn.style.pointerEvents = "none";
 
-        // Kênh 1: RSS xuyên thủng mọi hàng rào (Tối ưu)
-        // Kênh 2: HTML truyền thống (Dự phòng)
         const targetUrls = [
             "https://xskt.com.vn/rss/mien-nam.rss", 
             "https://xskt.com.vn/xsmn"              
@@ -167,10 +183,11 @@
 
         let stationsData = [];
 
-        for (let target of targetUrls) {
+        outerLoop: for (let target of targetUrls) {
             for (let proxy of proxies) {
                 try {
-                    let res = await fetch(proxy.url + encodeURIComponent(target));
+                    // Dùng hàm fetch có bomb hẹn giờ 5 giây thay vì fetch gốc
+                    let res = await fetchWithTimeout(proxy.url + encodeURIComponent(target), { timeout: 5000 });
                     if (!res.ok) continue;
                     
                     let textData = "";
@@ -183,7 +200,7 @@
 
                     if(!textData) continue;
 
-                    // PHÂN TÍCH XML RSS SIÊU NHANH GỌN LẸ (CHỐNG CLOUDFLARE 100%)
+                    // XỬ LÝ RSS
                     if(target.includes('.rss') && textData.includes('<item>')) {
                         const parser = new DOMParser();
                         const xmlDoc = parser.parseFromString(textData, "text/xml");
@@ -191,29 +208,22 @@
                         
                         if(items.length > 0) {
                             let desc = items[0].textContent; 
-                            // Tách các tỉnh bằng dấu "-" hoặc xuống dòng
                             let stationStrings = desc.split(/\s*-\s*|\n/);
                             
                             for(let stStr of stationStrings) {
                                 if(!stStr.includes('ĐB:')) continue; 
-                                
                                 let parts = stStr.split(":");
                                 let name = parts[0].trim(); 
-                                
-                                // Xóa mấy cái nhãn phụ như ĐB:, 1:, 2: để không cào lộn
                                 let numStr = stStr.substring(name.length).replace(/(ĐB|1|2|3|4|5|6|7|8):/gi, ' ');
                                 let rawNums = numStr.match(/\b\d{2,6}\b/g) || [];
-                                
-                                // Đảo ngược mảng vì RSS nó xếp từ Giải ĐB xuống Giải 8
                                 rawNums.reverse();
-                                
                                 if(rawNums.length >= 18) {
                                     stationsData.push({ name: name, nums: rawNums });
                                 }
                             }
                         }
                     } 
-                    // PHÂN TÍCH HTML BẢNG ĐIỆN TỬ (PHƯƠNG ÁN B)
+                    // XỬ LÝ HTML
                     else if (textData.includes('MN0')) {
                         const parser = new DOMParser();
                         const doc = parser.parseFromString(textData, "text/html");
@@ -243,20 +253,21 @@
                                     }
                                 });
                             }
-                            // Lọc mấy đài trống
                             stationsData = tempStations.filter(s => s.nums.length > 0);
                         }
                     }
 
-                    if(stationsData.length > 0) break; 
-                } catch(e) { }
+                    if(stationsData.length > 0) break outerLoop; 
+                } catch(e) { 
+                    console.log("Cổng proxy bị ngâm quá 5 giây, sút nó qua cổng mới liền...");
+                }
             }
-            if(stationsData.length > 0) break; 
         }
 
+        // NẾU TẤT CẢ ĐỀU THẤT BẠI THÌ HIỆN Ô DÁN TAY NGAY LẬP TỨC (KHÔNG TREO APP NỮA)
         if (stationsData.length === 0) {
-            alert("⚠️ Radar RSS cũng bị chặn! Mày vui lòng vào web xskt.com.vn copy bảng kết quả rồi DÁN TAY VÀO Ô nhé!");
-            btn.innerText = "🤖 THỬ CÀO LẠI DATA";
+            btn.innerText = "❌ NHÀ ĐÀI CHẶN. DÁN TAY VÀO Ô DƯỚI";
+            btn.style.background = "linear-gradient(135deg, #ef4444, #b91c1c)";
             document.getElementById("soVe").style.display = "block";
             document.getElementById("btnAction").style.display = "block";
             btn.style.opacity = "1"; btn.style.pointerEvents = "auto";
@@ -273,7 +284,6 @@
 
     function quetBangMatrix() {
         let val = document.getElementById("soVe").value.trim();
-        // Cắt bỏ ba cái tiền thưởng tào lao (20.000.000)
         val = val.replace(/\b\d{1,3}([,.]\d{3})+\b/g, ' '); 
         const rawNums = val.match(/\b\d{2,6}\b/g);
         
@@ -358,7 +368,7 @@
         }
 
         gaugeBox.style.display = "block"; gaugeText.style.display = "block";
-        statusEl.innerText = "Đang chạy Thần Tài Engine V20..."; statusEl.style.color = "var(--glow-gold)";
+        statusEl.innerText = "Đang chạy Thần Tài Engine V21..."; statusEl.style.color = "var(--glow-gold)";
         
         let resultObj = phanTichSo(num); 
         let pObj = resultObj.active;
@@ -389,14 +399,11 @@
         document.getElementById("singleRulesList").innerHTML = rulesHtml;
     }
 
-    // ====================================================
-    // LÕI V20: SIÊU TOÁN HỌC - KHÔNG THỂ CÃI LẠI
-    // ====================================================
     function phanTichSo(strNum) {
         let active = {};
         let len = strNum.length;
 
-        // 1. SẢNH RỒNG 
+        // 1. SẢNH RỒNG
         let zeros = (strNum.match(/0/g) || []).length;
         let uniqueDigits = [...new Set(strNum.replace(/0/g, '').split('').map(Number))].sort((a,b)=>a-b);
         let maxSanh = zeros > 0 ? zeros : 1; 
