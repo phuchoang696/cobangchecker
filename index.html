@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>THẦN TÀI ĐÂU - SECRET ENGINE V10</title>
+    <title>THẦN TÀI ĐÂU - SECRET ENGINE V11</title>
     <style>
         :root {
             --bg-color: #0b101a; --card-bg: #121827; --pill-bg: #090e17; --border-dim: #1f2937;
@@ -43,7 +43,7 @@
         .prize-name { width: 65px; color: var(--text-muted); font-size: 12px; font-weight: 600; padding-top: 6px; }
         .prize-numbers { flex: 1; display: flex; flex-wrap: wrap; gap: 6px; }
         
-        /* CHỈ NHỮNG VÉ SIÊU ĐẲNG CẤP MỚI ĐƯỢC KÍCH HOẠT HIỆU ỨNG NÀY */
+        /* CHỈ VÉ VIP MỚI ĐƯỢC PHÁT SÁNG */
         .pill { background: var(--pill-bg); border: 1px solid var(--border-dim); color: #d1d5db; font-family: monospace; font-weight: bold; font-size: 14px; padding: 5px 10px; border-radius: 20px; transition: 0.2s; }
         .pill.vip { border-color: var(--glow-blue); color: #60a5fa; background: rgba(59, 130, 246, 0.1); box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); cursor: pointer; }
         .pill.vip:active { transform: scale(0.95); }
@@ -79,7 +79,7 @@
         <div class="profile-bar">
             <div class="user-info">
                 <div class="avatar">VIP</div>
-                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V10 💎</span></div>
+                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V11 💎</span></div>
             </div>
         </div>
 
@@ -227,9 +227,9 @@
 
             uniqueNums.forEach(num => {
                 let paddedNum = num.padStart(6, '0');
-                
-                // CHỈ PHÁT SÁNG VIP NẾU ĐẠT CÁC LUẬT ĐẲNG CẤP (KHÔNG TÍNH SẢNH, ÂM DƯƠNG, BÁT QUÁI DỄ DÃI)
                 let pObj = phanTichSo(paddedNum).active;
+                
+                // TẠI BẢNG ĐÀI: KHÓA CHẶT, CHỈ NHỮNG VÉ SIÊU VIP MỚI ĐƯỢC PHÁT SÁNG
                 let isVip = false;
                 if(pObj.nguhanh || pObj.tamtai || pObj.tinhtu || pObj.donganh || pObj.cuucung || pObj.thandinh) {
                     isVip = true;
@@ -279,7 +279,7 @@
         }
 
         gaugeBox.style.display = "block"; gaugeText.style.display = "block";
-        statusEl.innerText = "Đang chạy Thần Tài Engine V10..."; statusEl.style.color = "var(--glow-gold)";
+        statusEl.innerText = "Đang chạy Thần Tài Engine V11..."; statusEl.style.color = "var(--glow-gold)";
         
         let paddedNum = num.padStart(6, '0');
         let resultObj = phanTichSo(paddedNum); 
@@ -311,14 +311,11 @@
         document.getElementById("singleRulesList").innerHTML = rulesHtml;
     }
 
-    // ====================================================
-    // LÕI ENGINE V10: CHÂN KINH TUYỆT ĐỐI KHÔNG SẠN
-    // ====================================================
     function phanTichSo(strNum) {
         let active = {};
         let len = strNum.length;
 
-        // 1. SẢNH RỒNG (RESTORED JOKER 0 LẮP CHỖ TRỐNG)
+        // 1. SẢNH RỒNG (0 JOKER ĐƯỢC PHỤC HỒI)
         let zeros = (strNum.match(/0/g) || []).length;
         let digits = [...new Set(strNum.replace(/0/g, '').split('').map(Number))].sort((a,b)=>a-b);
         let maxSanh = zeros > 0 ? zeros : 1; 
@@ -340,7 +337,7 @@
         }
         if (maxSanh >= 3) active['sanh'] = true;
 
-        // 2. ÂM DƯƠNG (ÉP SOI 5 SỐ CUỐI, GỌT SỐ 0, PHẢI FULL CHẴN HOẶC LẺ)
+        // 2. ÂM DƯƠNG (ÉP SOI 5 SỐ CUỐI, BỎ 0)
         if(len >= 5) {
             let last5 = strNum.slice(-5).replace(/0/g, '');
             if(last5.length > 0) {
@@ -352,7 +349,7 @@
             }
         }
 
-        // 3. BÁT QUÁI (CHÍNH XÁC 3 CHẴN - 3 LẺ TRÊN CHUỖI 6 SỐ)
+        // 3. BÁT QUÁI (3 CHẴN - 3 LẺ)
         if(len === 6) {
             let evens = 0, odds = 0;
             for(let char of strNum) {
@@ -361,23 +358,17 @@
             if(evens === 3 && odds === 3) active['batquai'] = true;
         }
 
-        // 4. NGŨ HÀNH (KHẮT KHE: +-1, 10, 11)
+        // 4. NGŨ HÀNH (KHẮT KHE Y CHANG TÀI LIỆU CỦA CHỦ TỊCH)
         let nguhanhMatched = false;
-        
-        for(let i=0; i<len-1; i++) {
-            if(Math.abs(parseInt(strNum[i]) - parseInt(strNum[i+1])) === 1) {
-                nguhanhMatched = true; break;
-            }
-        }
-        if(!nguhanhMatched && len >= 4) {
+        if(len >= 4) {
             for(let i=0; i<=len-4; i++) {
                 let n1 = parseInt(strNum.substring(i, i+2));
-                let n2_adj = parseInt(strNum.substring(i+2, i+4)); // Cặp liền kề
+                let n2_adj = parseInt(strNum.substring(i+2, i+4)); // Cụm 2 số liền kề
                 let diff1 = Math.abs(n1 - n2_adj);
                 if(diff1 === 1 || diff1 === 10 || diff1 === 11) { nguhanhMatched = true; break; }
                 
                 if(i+5 <= len) {
-                    let n2_sep = parseInt(strNum.substring(i+3, i+5)); // Cặp cách 1 số
+                    let n2_sep = parseInt(strNum.substring(i+3, i+5)); // Cụm 2 số cách 1 số ẩn
                     let diff2 = Math.abs(n1 - n2_sep);
                     if(diff2 === 1 || diff2 === 10 || diff2 === 11) { nguhanhMatched = true; break; }
                 }
@@ -398,7 +389,7 @@
         // 8. CỬU CUNG
         if(len >= 4 && strNum === strNum.split('').reverse().join('')) active['cuucung'] = true;
 
-        // 9. THẦN DINH CUNG
+        // 9. THẦN DINH CUNG (39, 79, 68, 86)
         if(strNum.includes('39') || strNum.includes('79') || strNum.includes('68') || strNum.includes('86')) active['thandinh'] = true;
 
         return { active };
