@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>THẦN TÀI ĐÂU - SECRET ENGINE</title>
+    <title>THẦN TÀI ĐÂU - SECRET ENGINE V8</title>
     <style>
         :root {
             --bg-color: #0b101a; --card-bg: #121827; --pill-bg: #090e17; --border-dim: #1f2937;
@@ -15,7 +15,7 @@
         .container { width: 100%; max-width: 500px; padding: 20px; box-sizing: border-box; padding-bottom: 90px; }
         .profile-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; padding-top: 10px; }
         .user-info { display: flex; align-items: center; gap: 12px; }
-        .avatar { width: 40px; height: 40px; background: linear-gradient(135deg, var(--glow-blue), var(--glow-cyan)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; color: #fff; }
+        .avatar { width: 40px; height: 40px; background: linear-gradient(135deg, var(--glow-gold), #b45309); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; color: #fff; }
         .user-name { font-weight: bold; font-size: 16px; margin: 0 0 2px 0; }
         .tier-badge { background: rgba(255,255,255,0.1); color: #9ca3af; font-size: 10px; padding: 2px 6px; border-radius: 4px; display: inline-block; }
         .right-badges { display: flex; gap: 8px; }
@@ -42,8 +42,10 @@
         .prize-row:last-child { border-bottom: none; }
         .prize-name { width: 65px; color: var(--text-muted); font-size: 12px; font-weight: 600; padding-top: 6px; }
         .prize-numbers { flex: 1; display: flex; flex-wrap: wrap; gap: 6px; }
+        
+        /* HIỆU ỨNG PILL CỰC KHẮT KHE */
         .pill { background: var(--pill-bg); border: 1px solid var(--border-dim); color: #d1d5db; font-family: monospace; font-weight: bold; font-size: 14px; padding: 5px 10px; border-radius: 20px; transition: 0.2s; }
-        .pill.vip { border-color: var(--glow-blue); color: #60a5fa; background: var(--vip-bg); box-shadow: 0 0 10px rgba(59, 130, 246, 0.2); cursor: pointer; }
+        .pill.vip { border-color: var(--glow-blue); color: #60a5fa; background: rgba(59, 130, 246, 0.1); box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); cursor: pointer; }
         .pill.vip:active { transform: scale(0.95); }
 
         .single-input-wrapper { background: var(--card-bg); border-radius: 16px; padding: 30px 20px; text-align: center; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid var(--border-dim); }
@@ -78,13 +80,13 @@
     <div class="container">
         <div class="profile-bar">
             <div class="user-info">
-                <div class="avatar" style="background: linear-gradient(135deg, var(--glow-gold), #b45309);">VIP</div>
-                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V7 💎</span></div>
+                <div class="avatar">VIP</div>
+                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V8 💎</span></div>
             </div>
         </div>
 
         <h1 class="app-title">THẦN TÀI<br>ĐÂU</h1>
-        <p class="app-sub">Hệ thống phân tích 9 quy luật phong thủy chuẩn xác 100%.</p>
+        <p class="app-sub">Hệ thống phân tích 9 quy luật phong thủy KHẮT KHE 100%.</p>
 
         <div class="tab-container">
             <button class="tab-btn active" id="btnTabSingle" onclick="switchTab('single')">Nhập Số</button>
@@ -97,7 +99,7 @@
                 <div class="gauge-container" id="gaugeBox"><div class="gauge-bar" id="gaugeFill"></div></div>
 
                 <input type="text" class="single-input" id="singleNumInput" maxlength="6" placeholder="000000" oninput="quetSoLe()" autocomplete="off">
-                <div class="input-status" id="singleStatus">Gõ số vào đây để gọi Thần Tài</div>
+                <div class="input-status" id="singleStatus">Gõ đủ 6 số vào đây để gọi Thần Tài</div>
             </div>
             <div id="singleRulesList"></div>
         </div>
@@ -118,14 +120,14 @@
 
 <script>
     const rulesConfig = [
-        { id: 'sanh', title: 'Law of Ascension', desc: 'Mạch khí kết nối sảnh 3+. Joker 0 bù lỗ.', failDesc: 'Chưa đủ điều kiện kết nối mạch số.' },
+        { id: 'sanh', title: 'Law of Ascension', desc: 'Mạch khí kết nối sảnh 3+. Số 0 tàng hình.', failDesc: 'Chưa đủ điều kiện kết nối mạch số.' },
         { id: 'amduong', title: 'Yin-Yang Harmony', desc: '5 số cuối thuần chẵn/lẻ.', failDesc: 'Năng lượng Âm Dương đang hỗn loạn.' },
         { id: 'batquai', title: 'Bagua Trigram', desc: 'Tỉ lệ Thái Cực cân bằng: 3 Chẵn - 3 Lẻ.', failDesc: 'Sóng năng lượng chưa đạt độ cân bằng.' },
         { id: 'tamtai', title: 'Trinity Recurrence', desc: 'Cấu trúc lặp ABCABC.', failDesc: 'Chưa hình thành vòng lặp Tam Tài.' },
         { id: 'tinhtu', title: 'Twin Star Alignment', desc: 'Cấu trúc AABXXY hoặc ABBXYY.', failDesc: 'Các vì sao tâm linh phân tán.' },
         { id: 'donganh', title: 'Shoulder Pole', desc: 'Cấu trúc ABAXYX đối xứng.', failDesc: 'Trọng tâm phong thủy lệch trục.' },
         { id: 'cuucung', title: 'Nine Palaces', desc: 'Số soi gương 2 chiều hoàn hảo.', failDesc: 'Không có sự phản chiếu Cửu Cung.' },
-        { id: 'nguhanh', title: 'Five Elements (VIP)', desc: 'Lệch +-1, 10, 11 giữa các cặp/số kề.', failDesc: 'Chưa kích hoạt cấu trúc Ngũ Hành.' },
+        { id: 'nguhanh', title: 'Five Elements (VIP)', desc: 'Cặp 2 số lệch +-1, 10, 11 kề nhau.', failDesc: 'Chưa kích hoạt cấu trúc Ngũ Hành.' },
         { id: 'thandinh', title: 'Deity\'s Convergence', desc: 'Chứa luồng số Thần Tài (39, 79, 68, 86).', failDesc: 'Luồng số phân tán, chưa tụ Thần Dinh.' }
     ];
 
@@ -145,9 +147,6 @@
         }
     }
 
-    // ==========================================
-    // HỆ THỐNG LẤY DATA BẤT TỬ (MULTI-PROXY)
-    // ==========================================
     async function autoFetchData() {
         const btn = document.getElementById("btnAutoFetch");
         btn.innerText = "⏳ ĐANG PHÁ TƯỜNG LỬA LẤY DATA...";
@@ -155,27 +154,21 @@
 
         const targetUrl = "https://xskt.com.vn/xsmn";
         const proxies = [
-            "https://api.allorigins.win/raw?url=", // Cổng 1 (Nhanh, ổn định nhất)
-            "https://corsproxy.io/?",              // Cổng 2 (Dự phòng mạnh)
-            "https://api.codetabs.com/v1/proxy?quest=" // Cổng 3 (Hay lỗi nhưng để back-up)
+            "https://api.allorigins.win/raw?url=", 
+            "https://corsproxy.io/?",              
+            "https://api.codetabs.com/v1/proxy?quest=" 
         ];
 
         let htmlText = null;
-
         for (let proxy of proxies) {
             try {
                 let res = await fetch(proxy + encodeURIComponent(targetUrl));
-                if (res.ok) {
-                    htmlText = await res.text();
-                    break; // Lấy thành công thì thoát vòng lặp
-                }
-            } catch(e) {
-                console.log("Cổng proxy xịt, đang chuyển cổng mới...");
-            }
+                if (res.ok) { htmlText = await res.text(); break; }
+            } catch(e) { console.log("Chuyển proxy..."); }
         }
 
         if (!htmlText) {
-            alert("Mạng lag hoặc nhà cái chặn IP gắt quá. Mày paste tay số liệu vào ô nha!");
+            alert("Mạng lag. Mày paste tay số liệu vào ô nha!");
             btn.innerText = "🤖 THỬ CÀO LẠI DATA";
             document.getElementById("soVe").style.display = "block";
             document.getElementById("btnAction").style.display = "block";
@@ -226,16 +219,6 @@
         btn.style.opacity = "1"; btn.style.pointerEvents = "auto";
     }
 
-    function quetBangMatrix() {
-        let val = document.getElementById("soVe").value.trim().replace(/[.,]/g, '');
-        const rawNums = val.match(/\b\d{2,6}\b/g);
-        if (!rawNums) { alert("Dán gì vô ô đó ba, dán lại đi!"); return; }
-        
-        document.getElementById("soVe").style.display = "none";
-        document.getElementById("btnAction").style.display = "none";
-        renderMatrixBoards([{ name: 'KẾT QUẢ TỔNG HỢP', nums: rawNums }]);
-    }
-
     function renderMatrixBoards(stationsArray) {
         let finalHtml = '';
         stationsArray.forEach(station => {
@@ -245,9 +228,12 @@
             const uniqueNums = [...new Set(validNums)];
 
             uniqueNums.forEach(num => {
-                let matchedRules = Object.keys(phanTichSo(num).active);
+                // CHỐT HẠ: LUÔN BƠM ĐỦ 6 SỐ CHO BẢNG MATRIX NHƯNG PHÂN TÍCH TRÊN SỐ ĐÃ BƠM
+                let paddedNum = num.padStart(6, '0');
+                
+                let matchedRules = Object.keys(phanTichSo(paddedNum).active);
                 let isVip = matchedRules.length > 0;
-                let htmlPill = `<div class="pill ${isVip ? 'vip' : ''}">${num}</div>`;
+                let htmlPill = `<div class="pill ${isVip ? 'vip' : ''}">${paddedNum}</div>`;
 
                 let len = num.length;
                 if (len === 2) groups['P. TÁM'].push(htmlPill);
@@ -291,9 +277,10 @@
         }
 
         gaugeBox.style.display = "block"; gaugeText.style.display = "block";
-        statusEl.innerText = "Đang chạy Thần Tài Engine..."; statusEl.style.color = "var(--glow-gold)";
+        statusEl.innerText = "Đang chạy Thần Tài Engine V8..."; statusEl.style.color = "var(--glow-gold)";
         
-        let resultObj = phanTichSo(num); 
+        let paddedNum = num.padStart(6, '0');
+        let resultObj = phanTichSo(paddedNum); 
         let vipRulesCount = Object.keys(resultObj.active).length;
         
         let score = 0;
@@ -319,33 +306,27 @@
         document.getElementById("singleRulesList").innerHTML = rulesHtml;
     }
 
+    // ====================================================
+    // LÕI ENGINE V8: SIẾT LUẬT CỰC ĐỘ THEO CHUẨN TÀI LIỆU
+    // ====================================================
     function phanTichSo(strNum) {
         let active = {};
         let len = strNum.length;
 
-        // 1. SẢNH RỒNG
-        let zeros = (strNum.match(/0/g) || []).length;
-        let digits = [...new Set(strNum.replace(/0/g, '').split('').map(Number))].sort((a,b)=>a-b);
-        let maxSanh = zeros > 0 ? zeros : 1; 
-
-        if (digits.length > 0) {
-            for (let i = 0; i < digits.length; i++) {
-                let currentZeros = zeros;
-                let currentLen = 1;
-                let expectedNext = digits[i] + 1;
-                for (let j = i + 1; j < digits.length; j++) {
-                    let gap = digits[j] - expectedNext;
-                    if (gap === 0) { currentLen++; expectedNext++; } 
-                    else if (gap > 0 && currentZeros >= gap) { currentZeros -= gap; currentLen += gap + 1; expectedNext = digits[j] + 1; } 
-                    else break;
-                }
-                currentLen += currentZeros; 
-                if (currentLen > maxSanh) maxSanh = currentLen;
+        // 1. SẢNH RỒNG (SIẾT LUẬT: SỐ 0 BỊ LỌC BỎ, KHÔNG LÀM JOKER)
+        let noZeros = [...new Set(strNum.replace(/0/g, '').split('').map(Number))].sort((a,b)=>a-b);
+        let maxSanh = 1, curr = 1;
+        for(let i=1; i<noZeros.length; i++) {
+            if(noZeros[i] === noZeros[i-1] + 1) {
+                curr++;
+                if(curr > maxSanh) maxSanh = curr;
+            } else {
+                curr = 1;
             }
         }
         if (maxSanh >= 3) active['sanh'] = true;
 
-        // 2. ÂM DƯƠNG
+        // 2. ÂM DƯƠNG (SIẾT LUẬT: ÉP SOI 5 SỐ CUỐI, BỎ QUA 0)
         if(len >= 5) {
             let last5 = strNum.slice(-5).replace(/0/g, '');
             if(last5.length > 0) {
@@ -357,7 +338,7 @@
             }
         }
 
-        // 3. BÁT QUÁI
+        // 3. BÁT QUÁI (3 CHẴN - 3 LẺ)
         if(len === 6) {
             let evens = 0, odds = 0;
             for(let char of strNum) {
@@ -366,19 +347,20 @@
             if(evens === 3 && odds === 3) active['batquai'] = true;
         }
 
-        // 4. NGŨ HÀNH
+        // 4. NGŨ HÀNH (SIẾT LUẬT: +-1, 10, 11 CHỈ TÍNH TRÊN CẶP 2 SỐ, KHÔNG TÍNH SỐ LẺ)
         let nguhanhMatched = false;
-        for(let i=0; i<len-1; i++) {
-            if(Math.abs(parseInt(strNum[i]) - parseInt(strNum[i+1])) === 1) { nguhanhMatched = true; break; }
-        }
-        if(!nguhanhMatched && len >= 4) {
+        if(len >= 4) {
             for(let i=0; i<=len-4; i++) {
                 let n1 = parseInt(strNum.substring(i, i+2));
-                let n2_adj = parseInt(strNum.substring(i+2, i+4));
-                if(Math.abs(n1 - n2_adj) === 1 || Math.abs(n1 - n2_adj) === 10 || Math.abs(n1 - n2_adj) === 11) { nguhanhMatched = true; break; }
+                let n2_adj = parseInt(strNum.substring(i+2, i+4)); // Cặp liền kề
+                
+                let diff1 = Math.abs(n1 - n2_adj);
+                if(diff1 === 1 || diff1 === 10 || diff1 === 11) { nguhanhMatched = true; break; }
+                
                 if(i+5 <= len) {
-                    let n2_sep = parseInt(strNum.substring(i+3, i+5));
-                    if(Math.abs(n1 - n2_sep) === 1 || Math.abs(n1 - n2_sep) === 10 || Math.abs(n1 - n2_sep) === 11) { nguhanhMatched = true; break; }
+                    let n2_sep = parseInt(strNum.substring(i+3, i+5)); // Cặp cách 1 số
+                    let diff2 = Math.abs(n1 - n2_sep);
+                    if(diff2 === 1 || diff2 === 10 || diff2 === 11) { nguhanhMatched = true; break; }
                 }
             }
         }
