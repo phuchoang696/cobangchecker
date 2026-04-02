@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AE KBANG CHECKER - SECRET ENGINE V6</title>
+    <title>THẦN TÀI ĐÂU - SECRET ENGINE</title>
     <style>
         :root {
             --bg-color: #0b101a; --card-bg: #121827; --pill-bg: #090e17; --border-dim: #1f2937;
@@ -21,7 +21,7 @@
         .right-badges { display: flex; gap: 8px; }
         .small-badge { background: var(--card-bg); border: 1px solid var(--border-dim); padding: 4px 8px; border-radius: 8px; font-size: 12px; font-weight: bold; }
         
-        .app-title { text-align: center; color: var(--glow-blue); font-size: 32px; font-weight: 900; margin: 10px 0; line-height: 1.2; text-shadow: 0 0 20px rgba(6, 182, 212, 0.3); }
+        .app-title { text-align: center; color: var(--glow-gold); font-size: 32px; font-weight: 900; margin: 10px 0; line-height: 1.2; text-shadow: 0 0 20px rgba(251, 191, 36, 0.3); }
         .app-sub { text-align: center; color: #9ca3af; font-size: 13px; line-height: 1.5; margin-bottom: 30px;}
         
         .tab-container { display: flex; gap: 8px; margin-bottom: 25px; background: var(--card-bg); padding: 5px; border-radius: 14px; border: 1px solid var(--border-dim);}
@@ -55,7 +55,6 @@
         .gauge-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #ef4444 0%, #fbbf24 50%, #10b981 100%); transition: width 0.5s ease-out; }
         .gauge-text { color: var(--glow-green); font-weight: 900; font-size: 14px; text-transform: uppercase; margin-bottom: 10px; display: none; }
 
-        /* ĐỘ LẠI GRID 2 CỘT CHO GIỐNG APP ĐỐI THỦ */
         #singleRulesList { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         @media (max-width: 400px) { #singleRulesList { grid-template-columns: 1fr; } }
         
@@ -79,12 +78,12 @@
     <div class="container">
         <div class="profile-bar">
             <div class="user-info">
-                <div class="avatar">VIP</div>
-                <div><p class="user-name">AE Kbang!</p><span class="tier-badge">SECRET ENGINE V6 💎</span></div>
+                <div class="avatar" style="background: linear-gradient(135deg, var(--glow-gold), #b45309);">VIP</div>
+                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V7 💎</span></div>
             </div>
         </div>
 
-        <h1 class="app-title">AE KBANG<br>CHECKER</h1>
+        <h1 class="app-title">THẦN TÀI<br>ĐÂU</h1>
         <p class="app-sub">Hệ thống phân tích 9 quy luật phong thủy chuẩn xác 100%.</p>
 
         <div class="tab-container">
@@ -98,15 +97,15 @@
                 <div class="gauge-container" id="gaugeBox"><div class="gauge-bar" id="gaugeFill"></div></div>
 
                 <input type="text" class="single-input" id="singleNumInput" maxlength="6" placeholder="000000" oninput="quetSoLe()" autocomplete="off">
-                <div class="input-status" id="singleStatus">Gõ số vào đây để soi theo bí kíp</div>
+                <div class="input-status" id="singleStatus">Gõ số vào đây để gọi Thần Tài</div>
             </div>
             <div id="singleRulesList"></div>
         </div>
 
         <div id="tabMatrixContent">
             <button class="btn-auto" id="btnAutoFetch" onclick="autoFetchData()">🤖 TỰ ĐỘNG CÀO DATA XSMN</button>
-            <textarea id="soVe" placeholder="Dán dữ liệu XSMN hôm nay vào đây..."></textarea>
-            <button class="btn-action" id="btnAction" onclick="quetBangMatrix()">PHÂN TÍCH</button>
+            <textarea id="soVe" placeholder="Dán dữ liệu XSMN hôm nay vào đây nếu cào thất bại..."></textarea>
+            <button class="btn-action" id="btnAction" onclick="quetBangMatrix()">PHÂN TÍCH DATA</button>
             <div id="matrixContainer"></div>
         </div>
     </div>
@@ -118,7 +117,6 @@
     </div>
 
 <script>
-    // FULL 9 QUY LUẬT Y CHANG APP ĐỐI THỦ
     const rulesConfig = [
         { id: 'sanh', title: 'Law of Ascension', desc: 'Mạch khí kết nối sảnh 3+. Joker 0 bù lỗ.', failDesc: 'Chưa đủ điều kiện kết nối mạch số.' },
         { id: 'amduong', title: 'Yin-Yang Harmony', desc: '5 số cuối thuần chẵn/lẻ.', failDesc: 'Năng lượng Âm Dương đang hỗn loạn.' },
@@ -147,7 +145,136 @@
         }
     }
 
-    let typingTimer;
+    // ==========================================
+    // HỆ THỐNG LẤY DATA BẤT TỬ (MULTI-PROXY)
+    // ==========================================
+    async function autoFetchData() {
+        const btn = document.getElementById("btnAutoFetch");
+        btn.innerText = "⏳ ĐANG PHÁ TƯỜNG LỬA LẤY DATA...";
+        btn.style.opacity = "0.7"; btn.style.pointerEvents = "none";
+
+        const targetUrl = "https://xskt.com.vn/xsmn";
+        const proxies = [
+            "https://api.allorigins.win/raw?url=", // Cổng 1 (Nhanh, ổn định nhất)
+            "https://corsproxy.io/?",              // Cổng 2 (Dự phòng mạnh)
+            "https://api.codetabs.com/v1/proxy?quest=" // Cổng 3 (Hay lỗi nhưng để back-up)
+        ];
+
+        let htmlText = null;
+
+        for (let proxy of proxies) {
+            try {
+                let res = await fetch(proxy + encodeURIComponent(targetUrl));
+                if (res.ok) {
+                    htmlText = await res.text();
+                    break; // Lấy thành công thì thoát vòng lặp
+                }
+            } catch(e) {
+                console.log("Cổng proxy xịt, đang chuyển cổng mới...");
+            }
+        }
+
+        if (!htmlText) {
+            alert("Mạng lag hoặc nhà cái chặn IP gắt quá. Mày paste tay số liệu vào ô nha!");
+            btn.innerText = "🤖 THỬ CÀO LẠI DATA";
+            document.getElementById("soVe").style.display = "block";
+            document.getElementById("btnAction").style.display = "block";
+            btn.style.opacity = "1"; btn.style.pointerEvents = "auto";
+            return;
+        }
+
+        try {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlText, "text/html");
+            const table = doc.getElementById('MN0') || doc.querySelector('table');
+            if(!table) throw new Error("Không tìm thấy bảng");
+
+            const trs = Array.from(table.querySelectorAll('tr'));
+            let headerRowIdx = 0;
+            for(let i=0; i<trs.length; i++) {
+                if(trs[i].innerText.toLowerCase().includes('giải')) { headerRowIdx = i; break; }
+            }
+            
+            const headers = Array.from(trs[headerRowIdx].querySelectorAll('th, td')).map(el => el.innerText.trim()).filter(txt => txt && txt.toLowerCase() !== 'giải');
+            let stationsData = headers.map(name => ({ name: name, nums: [] }));
+            
+            for(let i = headerRowIdx + 1; i < trs.length; i++) {
+                const cells = Array.from(trs[i].querySelectorAll('td'));
+                if(cells.length > 1) {
+                    let dataCells = cells.length > stationsData.length ? cells.slice(1) : cells;
+                    dataCells.forEach((cell, index) => {
+                        if(stationsData[index]) {
+                            const cellNums = cell.innerText.match(/\b\d{2,6}\b/g) || [];
+                            stationsData[index].nums.push(...cellNums);
+                        }
+                    });
+                }
+            }
+            
+            document.getElementById("soVe").style.display = "none";
+            document.getElementById("btnAction").style.display = "none";
+            
+            renderMatrixBoards(stationsData);
+            btn.innerText = "✅ THẦN TÀI ĐÃ GỌI DATA VỀ";
+            btn.style.background = "linear-gradient(135deg, #0ea5e9, #0284c7)";
+            
+        } catch (error) {
+            alert("Lỗi phân tích bảng web.");
+            btn.innerText = "🤖 THỬ LẠI";
+        }
+        
+        btn.style.opacity = "1"; btn.style.pointerEvents = "auto";
+    }
+
+    function quetBangMatrix() {
+        let val = document.getElementById("soVe").value.trim().replace(/[.,]/g, '');
+        const rawNums = val.match(/\b\d{2,6}\b/g);
+        if (!rawNums) { alert("Dán gì vô ô đó ba, dán lại đi!"); return; }
+        
+        document.getElementById("soVe").style.display = "none";
+        document.getElementById("btnAction").style.display = "none";
+        renderMatrixBoards([{ name: 'KẾT QUẢ TỔNG HỢP', nums: rawNums }]);
+    }
+
+    function renderMatrixBoards(stationsArray) {
+        let finalHtml = '';
+        stationsArray.forEach(station => {
+            let groups = { 'P. TÁM': [], 'P. BẢY': [], 'P. SÁU': [], 'P. NĂM': [], 'P. TƯ': [], 'P. BA': [], 'P. NHÌ': [], 'P. NHẤT': [], 'P. Đ.BIỆT': [] };
+            
+            const validNums = station.nums.filter(n => !(n.length === 4 && n.startsWith('202')));
+            const uniqueNums = [...new Set(validNums)];
+
+            uniqueNums.forEach(num => {
+                let matchedRules = Object.keys(phanTichSo(num).active);
+                let isVip = matchedRules.length > 0;
+                let htmlPill = `<div class="pill ${isVip ? 'vip' : ''}">${num}</div>`;
+
+                let len = num.length;
+                if (len === 2) groups['P. TÁM'].push(htmlPill);
+                else if (len === 3) groups['P. BẢY'].push(htmlPill);
+                else if (len === 4) { if(groups['P. SÁU'].length < 3) groups['P. SÁU'].push(htmlPill); else groups['P. NĂM'].push(htmlPill); }
+                else if (len === 5) {
+                    if(groups['P. TƯ'].length < 7) groups['P. TƯ'].push(htmlPill);
+                    else if(groups['P. BA'].length < 2) groups['P. BA'].push(htmlPill);
+                    else if(groups['P. NHÌ'].length < 1) groups['P. NHÌ'].push(htmlPill);
+                    else groups['P. NHẤT'].push(htmlPill);
+                }
+                else if (len === 6) groups['P. Đ.BIỆT'].push(htmlPill);
+            });
+
+            let boardHtml = '';
+            for (const [prize, pills] of Object.entries(groups)) {
+                if (pills.length > 0) boardHtml += `<div class="prize-row"><div class="prize-name">${prize}</div><div class="prize-numbers">${pills.join('')}</div></div>`;
+            }
+
+            if (boardHtml !== '') {
+                finalHtml += `<div class="matrix-board"><div class="board-header">ĐÀI: ${station.name}</div>${boardHtml}</div>`;
+            }
+        });
+
+        const container = document.getElementById("matrixContainer");
+        container.innerHTML = finalHtml; container.style.display = "block";
+    }
 
     function quetSoLe() {
         let inputEl = document.getElementById("singleNumInput");
@@ -164,7 +291,7 @@
         }
 
         gaugeBox.style.display = "block"; gaugeText.style.display = "block";
-        statusEl.innerText = "Đang chạy Secret Engine V6..."; statusEl.style.color = "var(--glow-blue)";
+        statusEl.innerText = "Đang chạy Thần Tài Engine..."; statusEl.style.color = "var(--glow-gold)";
         
         let resultObj = phanTichSo(num); 
         let vipRulesCount = Object.keys(resultObj.active).length;
@@ -192,14 +319,11 @@
         document.getElementById("singleRulesList").innerHTML = rulesHtml;
     }
 
-    // ====================================================
-    // LÕI ENGINE V6: FULL 9 QUY LUẬT (CÓ BÁT QUÁI & THẦN DINH)
-    // ====================================================
     function phanTichSo(strNum) {
         let active = {};
         let len = strNum.length;
 
-        // 1. SẢNH RỒNG (0 LÀ JOKER)
+        // 1. SẢNH RỒNG
         let zeros = (strNum.match(/0/g) || []).length;
         let digits = [...new Set(strNum.replace(/0/g, '').split('').map(Number))].sort((a,b)=>a-b);
         let maxSanh = zeros > 0 ? zeros : 1; 
@@ -221,7 +345,7 @@
         }
         if (maxSanh >= 3) active['sanh'] = true;
 
-        // 2. ÂM DƯƠNG (SOI 5 SỐ CUỐI, BỎ QUA 0)
+        // 2. ÂM DƯƠNG
         if(len >= 5) {
             let last5 = strNum.slice(-5).replace(/0/g, '');
             if(last5.length > 0) {
@@ -233,7 +357,7 @@
             }
         }
 
-        // 3. BÁT QUÁI (BAGUA) - 3 CHẴN, 3 LẺ
+        // 3. BÁT QUÁI
         if(len === 6) {
             let evens = 0, odds = 0;
             for(let char of strNum) {
@@ -242,7 +366,7 @@
             if(evens === 3 && odds === 3) active['batquai'] = true;
         }
 
-        // 4. NGŨ HÀNH (+-1, 10, 11)
+        // 4. NGŨ HÀNH
         let nguhanhMatched = false;
         for(let i=0; i<len-1; i++) {
             if(Math.abs(parseInt(strNum[i]) - parseInt(strNum[i+1])) === 1) { nguhanhMatched = true; break; }
@@ -260,20 +384,20 @@
         }
         if(nguhanhMatched) active['nguhanh'] = true;
 
-        // 5. TAM TÀI (ABCABC)
+        // 5. TAM TÀI
         if(len === 6 && strNum.slice(0,3) === strNum.slice(3,6)) active['tamtai'] = true;
         if(len === 5 && strNum.slice(0,2) === strNum.slice(3,5)) active['tamtai'] = true;
 
-        // 6. TINH TÚ (aabxxy hoặc abbxyy)
+        // 6. TINH TÚ
         if(len === 6 && ((strNum[0]===strNum[1] && strNum[3]===strNum[4]) || (strNum[1]===strNum[2] && strNum[4]===strNum[5]))) active['tinhtu'] = true;
 
-        // 7. ĐÒN GÁNH (ABAXYX)
+        // 7. ĐÒN GÁNH
         if(len === 6 && strNum[0]===strNum[2] && strNum[3]===strNum[5]) active['donganh'] = true;
 
         // 8. CỬU CUNG
         if(len >= 4 && strNum === strNum.split('').reverse().join('')) active['cuucung'] = true;
 
-        // 9. THẦN DINH CUNG (DEITY'S CONVERGENCE)
+        // 9. THẦN DINH CUNG
         if(strNum.includes('39') || strNum.includes('79') || strNum.includes('68') || strNum.includes('86')) active['thandinh'] = true;
 
         return { active };
