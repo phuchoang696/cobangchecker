@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>THẦN TÀI ĐÂU - SECRET ENGINE V15</title>
+    <title>THẦN TÀI ĐÂU - SECRET ENGINE V16</title>
     <style>
         :root {
             --bg-color: #0b101a; --card-bg: #121827; --pill-bg: #090e17; --border-dim: #1f2937;
@@ -78,12 +78,12 @@
         <div class="profile-bar">
             <div class="user-info">
                 <div class="avatar">VIP</div>
-                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V15 💎</span></div>
+                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V16 💎</span></div>
             </div>
         </div>
 
         <h1 class="app-title">THẦN TÀI<br>ĐÂU</h1>
-        <p class="app-sub">Hệ thống phân tích 9 quy luật phong thủy. Khắc phục hoàn toàn lỗi Ngũ Hành.</p>
+        <p class="app-sub">Hệ thống phân tích 9 quy luật phong thủy. (Hiển thị Toàn Bộ Vé Khớp).</p>
 
         <div class="tab-container">
             <button class="tab-btn active" id="btnTabSingle" onclick="switchTab('single')">Nhập Số</button>
@@ -219,6 +219,16 @@
         btn.style.opacity = "1"; btn.style.pointerEvents = "auto";
     }
 
+    // HIỂN THỊ THÔNG BÁO KHI BẤM VÀO VÉ KHỚP TRÊN BẢNG ĐÀI
+    function showMatchedRules(num, rulesArrayStr) {
+        let rulesArr = JSON.parse(rulesArrayStr);
+        let rulesNames = rulesArr.map(id => {
+            let found = rulesConfig.find(r => r.id === id);
+            return found ? found.title : id;
+        }).join('\\n- ');
+        alert("🎉 VÉ " + num + " TRÚNG QUY LUẬT:\\n\\n- " + rulesNames);
+    }
+
     function renderMatrixBoards(stationsArray) {
         let finalHtml = '';
         stationsArray.forEach(station => {
@@ -240,15 +250,16 @@
                 
                 let cleanNum = num.slice(-expectedLen);
                 let pObj = phanTichSo(cleanNum).active;
+                let matchedRules = Object.keys(pObj);
                 
-                // CHỈ PHÁT SÁNG VIP CHO BẢNG ĐÀI
-                let isVip = false;
-                if(pObj.sanh6 || pObj.nguhanh || pObj.tamtai || pObj.tinhtu || pObj.donganh || pObj.cuucung || pObj.thandinh) {
-                    isVip = true;
-                }
-
+                // YÊU CẦU CỦA CHỦ TỊCH: PHÁT SÁNG TOÀN BỘ VÉ KHỚP (KỂ CẢ SẢNH, BÁT QUÁI, ÂM DƯƠNG)
+                let isMatched = matchedRules.length > 0;
                 let paddedNum = cleanNum.padStart(6, '0');
-                let htmlPill = `<div class="pill ${isVip ? 'vip' : ''}">${paddedNum}</div>`;
+                
+                let rulesJson = isMatched ? JSON.stringify(matchedRules).replace(/"/g, '&quot;') : '[]';
+                let eventTag = isMatched ? `onclick="showMatchedRules('${paddedNum}', '${rulesJson}')"` : '';
+                
+                let htmlPill = `<div class="pill ${isMatched ? 'vip' : ''}" ${eventTag}>${paddedNum}</div>`;
 
                 if (!boardHtml.includes(prizeName)) {
                     boardHtml += `<div class="prize-row"><div class="prize-name">${prizeName}</div><div class="prize-numbers" id="${station.name}-${prizeGroupIndex}">${htmlPill}</div></div>`;
@@ -284,13 +295,13 @@
         }
 
         gaugeBox.style.display = "block"; gaugeText.style.display = "block";
-        statusEl.innerText = "Đang chạy Thần Tài Engine V15..."; statusEl.style.color = "var(--glow-gold)";
+        statusEl.innerText = "Đang chạy Thần Tài Engine V16..."; statusEl.style.color = "var(--glow-gold)";
         
         let resultObj = phanTichSo(num); 
         let pObj = resultObj.active;
         let vipRulesCount = Object.keys(pObj).length;
         
-        let isSuperVip = (pObj.sanh6 || pObj.nguhanh || pObj.tamtai || pObj.tinhtu || pObj.donganh || pObj.cuucung || pObj.thandinh);
+        let isSuperVip = (pObj.nguhanh || pObj.tamtai || pObj.tinhtu || pObj.donganh || pObj.cuucung || pObj.thandinh);
 
         let score = 0;
         if(vipRulesCount > 0) score = Math.min(vipRulesCount * 15, 80); 
@@ -316,7 +327,7 @@
     }
 
     // ====================================================
-    // LÕI V15: CẬP NHẬT LUẬT NGŨ HÀNH CHUẨN XÁC THEO CỤM 2 SỐ
+    // LÕI V16: NGŨ HÀNH (+-1) CHUẨN CỤM 2 SỐ & SUY LUẬN SỐ ẨN
     // ====================================================
     function phanTichSo(strNum) {
         let active = {};
@@ -337,7 +348,6 @@
             }
         }
         if (maxSanh >= 3) active['sanh'] = true;
-        if (maxSanh >= 6) active['sanh6'] = true;
 
         // 2. ÂM DƯƠNG
         let amduongStr = len > 5 ? strNum.slice(-5) : strNum;
@@ -359,21 +369,23 @@
             if(evens === 3 && odds === 3) active['batquai'] = true;
         }
 
-        // 4. NGŨ HÀNH (MỚI): CHỈ XÉT CỤM 2 SỐ, TÌM +-1, +-10, +-11 TRONG DÃY
+        // 4. NGŨ HÀNH (+-1, 10, 11) -> ÁP DỤNG TRÊN CỤM 2 SỐ NHƯ CHỦ TỊCH DẠY
         let nguhanhMatched = false;
         if(len >= 4) {
             for(let i=0; i<=len-4; i++) {
                 let n1 = parseInt(strNum.substring(i, i+2));
-                // Vòng lặp j bắt đầu từ i+2 để 2 cụm số không bị dính vào nhau (non-overlapping)
-                for(let j=i+2; j<=len-2; j++) { 
-                    let n2 = parseInt(strNum.substring(j, j+2));
-                    let diff = Math.abs(n1 - n2);
-                    if(diff === 1 || diff === 10 || diff === 11) {
-                        nguhanhMatched = true;
-                        break;
-                    }
+                
+                // So với cụm liền kề
+                let n2_adj = parseInt(strNum.substring(i+2, i+4)); 
+                let diff1 = Math.abs(n1 - n2_adj);
+                if(diff1 === 1 || diff1 === 10 || diff1 === 11) { nguhanhMatched = true; break; }
+                
+                // So với cụm cách 1 số ẩn (ví dụ: 35-5-46)
+                if(i+5 <= len) {
+                    let n2_sep = parseInt(strNum.substring(i+3, i+5)); 
+                    let diff2 = Math.abs(n1 - n2_sep);
+                    if(diff2 === 1 || diff2 === 10 || diff2 === 11) { nguhanhMatched = true; break; }
                 }
-                if(nguhanhMatched) break;
             }
         }
         if(nguhanhMatched) active['nguhanh'] = true;
@@ -395,7 +407,7 @@
         // 8. CỬU CUNG
         if(len >= 4 && strNum === strNum.split('').reverse().join('')) active['cuucung'] = true;
 
-        // 9. THẦN DINH CUNG
+        // 9. THẦN DINH CUNG 
         if(strNum.includes('39') || strNum.includes('79')) active['thandinh'] = true;
 
         return { active };
