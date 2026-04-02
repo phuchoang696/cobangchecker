@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>THẦN TÀI ĐÂU - SECRET ENGINE V22</title>
+    <title>THẦN TÀI ĐÂU - SECRET ENGINE V23</title>
     <style>
         :root {
             --bg-color: #0b101a; --card-bg: #121827; --pill-bg: #090e17; --border-dim: #1f2937;
@@ -78,12 +78,12 @@
         <div class="profile-bar">
             <div class="user-info">
                 <div class="avatar">VIP</div>
-                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V22 💎</span></div>
+                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V23 💎</span></div>
             </div>
         </div>
 
         <h1 class="app-title">THẦN TÀI<br>ĐÂU</h1>
-        <p class="app-sub">Phân tích 9 quy luật phong thủy. (Tích hợp Auto-Cào Đa Luồng ⚡).</p>
+        <p class="app-sub">Phân tích 9 quy luật phong thủy. (Chống Treo Máy iPhone 100%).</p>
 
         <div class="tab-container">
             <button class="tab-btn active" id="btnTabSingle" onclick="switchTab('single')">Nhập Số</button>
@@ -102,8 +102,8 @@
         </div>
 
         <div id="tabMatrixContent">
-            <button class="btn-auto" id="btnAutoFetch" onclick="autoFetchData()">🚀 BẮN TỈA ĐA LUỒNG (AUTO)</button>
-            <textarea id="soVe" placeholder="Dán dữ liệu XSMN hôm nay vào đây... (Tự động hiện nếu mạng lag)"></textarea>
+            <button class="btn-auto" id="btnAutoFetch" onclick="autoFetchData()">🚀 LẤY DATA (NHANH/HOẶC DÁN TAY)</button>
+            <textarea id="soVe" placeholder="Paste bảng KQXS vào đây nếu mạng chặn..."></textarea>
             <button class="btn-action" id="btnAction" onclick="quetBangMatrix()">PHÂN TÍCH DATA BẰNG TAY</button>
             <div id="matrixContainer"></div>
         </div>
@@ -111,7 +111,7 @@
 
     <div class="bottom-bar">
         <div class="bottom-bar-inner">
-            <button class="btn-fail" onclick="location.reload()">MÃI ĐÉO THÀNH CÔNG (TẢI LẠI)</button>
+            <button class="btn-fail" onclick="location.reload()">MÃI ĐÉO THÀNH CÔNG (TẢI LẠI TRANG)</button>
         </div>
     </div>
 
@@ -148,49 +148,31 @@
     }
 
     // ==========================================
-    // V22: THUẬT TOÁN BẮN TỈA ĐA LUỒNG (PROMISE.ANY) MAX 6 GIÂY
+    // V23: CHỐNG TREO MÁY IPHONE (ÉP TIME-OUT BẰNG TAY CƠ BẢN NHẤT)
     // ==========================================
     async function autoFetchData() {
         const btn = document.getElementById("btnAutoFetch");
-        btn.innerText = "⚡ ĐANG BẮN 4 TÊN LỬA (MAX 6 GIÂY)...";
+        btn.innerText = "⏳ ĐANG LẤY (ĐỢI TỐI ĐA 3S)...";
         btn.style.opacity = "0.7"; btn.style.pointerEvents = "none";
 
-        // Chuẩn bị sẵn 4 đường đạn (Allorigins x RSS, Allorigins x HTML, Codetabs x RSS, Codetabs x HTML)
-        const sources = [
-            "https://api.allorigins.win/get?url=" + encodeURIComponent("https://xskt.com.vn/rss/mien-nam.rss"),
-            "https://api.allorigins.win/get?url=" + encodeURIComponent("https://xskt.com.vn/xsmn"),
-            "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent("https://xskt.com.vn/rss/mien-nam.rss"),
-            "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent("https://xskt.com.vn/xsmn")
-        ];
-
-        const controller = new AbortController();
-
-        // Nạp đạn cho 4 tia bắn đồng thời
-        const fetchPromises = sources.map(url => 
-            fetch(url, { signal: controller.signal })
-            .then(res => {
-                if(!res.ok) throw new Error("Blocked");
-                return url.includes('allorigins') ? res.json().then(d => d.contents) : res.text();
-            })
-            .then(text => {
-                if(text && (text.includes('<item>') || text.includes('MN0'))) return text;
-                throw new Error("Invalid content");
-            })
-        );
-
-        // Quả bom 6 giây: Nếu 6 giây chưa thằng nào về, bom nổ, giết hết!
-        const timeoutId = setTimeout(() => controller.abort(), 6000);
+        const targetUrl = "https://xskt.com.vn/rss/mien-nam.rss";
+        const proxyUrl = "https://api.allorigins.win/raw?url=" + encodeURIComponent(targetUrl);
+        
+        let stationsData = [];
 
         try {
-            // Promise.any: Đứng chờ thằng nhanh nhất. Thằng nào đem data về sớm nhất sẽ lọt qua cửa này, 3 thằng còn lại bị vứt bỏ.
-            let textData = await Promise.any(fetchPromises);
-            clearTimeout(timeoutId);
-            controller.abort(); // Bấm nút tự hủy các request đang bị lag
+            // Cuộc đua tử thần: 1 thằng đi fetch, 1 thằng đếm đồng hồ 3 giây.
+            const fetchPromise = fetch(proxyUrl);
+            const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("TIMEOUT")), 3000));
             
-            let stationsData = [];
+            const res = await Promise.race([fetchPromise, timeoutPromise]);
+            
+            if (!res.ok) throw new Error("Blocked");
+            
+            const textData = await res.text();
 
-            // 1. Phân tích RSS nếu ăn trúng đạn RSS
-            if(textData.includes('<item>')) {
+            // Nếu ăn trúng đạn RSS
+            if(textData && textData.includes('<item>')) {
                 const parser = new DOMParser();
                 const xmlDoc = parser.parseFromString(textData, "text/xml");
                 const items = xmlDoc.querySelectorAll("item description");
@@ -207,37 +189,9 @@
                         if(rawNums.length >= 18) stationsData.push({ name: name, nums: rawNums });
                     }
                 }
-            } 
-            // 2. Phân tích HTML nếu ăn trúng đạn HTML
-            else if (textData.includes('MN0')) {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(textData, "text/html");
-                const table = doc.getElementById('MN0');
-                if(table) {
-                    const trs = Array.from(table.querySelectorAll('tr'));
-                    let headerRowIdx = 0;
-                    for(let i=0; i<trs.length; i++) {
-                        if(trs[i].innerText.toLowerCase().includes('giải')) { headerRowIdx = i; break; }
-                    }
-                    const headerCells = Array.from(trs[headerRowIdx].querySelectorAll('th, td')).map(el => el.innerText.trim()).filter(txt => txt && !txt.toLowerCase().includes('giải') && !txt.toLowerCase().includes('đài'));
-                    let tempStations = headerCells.map(name => ({ name: name, nums: [] }));
-                    for(let i=headerRowIdx+1; i<trs.length; i++) {
-                        const cells = Array.from(trs[i].querySelectorAll('td'));
-                        if(cells.length === 0) continue;
-                        let numCells = cells.length > tempStations.length ? cells.slice(-tempStations.length) : cells;
-                        numCells.forEach((cell, index) => {
-                            if(tempStations[index]) {
-                                let txt = cell.innerHTML.replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]*>/g, ' ');
-                                const cellNums = txt.match(/\b\d{2,6}\b/g) || [];
-                                tempStations[index].nums.push(...cellNums);
-                            }
-                        });
-                    }
-                    stationsData = tempStations.filter(s => s.nums.length > 0);
-                }
             }
 
-            if(stationsData.length === 0) throw new Error("Empty Array");
+            if(stationsData.length === 0) throw new Error("Empty Data");
 
             // THÀNH CÔNG VANG DỘI
             document.getElementById("soVe").style.display = "none";
@@ -247,9 +201,8 @@
             btn.style.background = "linear-gradient(135deg, #0ea5e9, #0284c7)";
             
         } catch (error) {
-            // NẾU TẤT CẢ 4 ĐƯỜNG ĐẠN BỊ CHẶN HOẶC QUÁ 6 GIÂY -> LẬP TỨC HIỆN Ô DÁN TAY
-            clearTimeout(timeoutId);
-            btn.innerText = "❌ MẠNG CHẶN GẮT! COPY/DÁN VÀO Ô DƯỚI";
+            // NẾU LỖI HOẶC QUÁ 3 GIÂY -> LẬP TỨC MỞ Ô DÁN TAY! ĐÉO CHO TREO MÁY!
+            btn.innerText = "❌ CLOUDFLARE CHẶN! DÁN TAY VÀO Ô DƯỚI";
             btn.style.background = "linear-gradient(135deg, #ef4444, #b91c1c)";
             document.getElementById("soVe").style.display = "block";
             document.getElementById("btnAction").style.display = "block";
@@ -345,7 +298,7 @@
         }
 
         gaugeBox.style.display = "block"; gaugeText.style.display = "block";
-        statusEl.innerText = "Đang chạy Thần Tài Engine V22..."; statusEl.style.color = "var(--glow-gold)";
+        statusEl.innerText = "Đang chạy Thần Tài Engine V23..."; statusEl.style.color = "var(--glow-gold)";
         
         let resultObj = phanTichSo(num); 
         let pObj = resultObj.active;
@@ -416,7 +369,7 @@
             if(evens === 3 && odds === 3) active['batquai'] = true;
         }
 
-        // 4. NGŨ HÀNH (+-1, 10, 11) TRÊN CỤM 2 SỐ
+        // 4. NGŨ HÀNH (+-1, 10, 11) CỤM 2 SỐ
         let nguhanhMatched = false;
         if(len >= 4) {
             for(let i=0; i<=len-4; i++) {
