@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>THẦN TÀI ĐÂU - SECRET ENGINE V8</title>
+    <title>THẦN TÀI ĐÂU - SECRET ENGINE V9</title>
     <style>
         :root {
             --bg-color: #0b101a; --card-bg: #121827; --pill-bg: #090e17; --border-dim: #1f2937;
@@ -28,7 +28,7 @@
         .tab-btn { flex: 1; background: transparent; color: var(--text-muted); border: none; padding: 12px 0; border-radius: 10px; font-weight: bold; font-size: 13px; cursor: pointer; transition: 0.2s; }
         .tab-btn.active { background: rgba(6, 182, 212, 0.15); color: var(--glow-blue); box-shadow: 0 0 10px rgba(6, 182, 212, 0.1); }
 
-        #tabMatrixContent, #tabSingleContent, #tabHistoryContent { display: none; flex-direction: column; animation: fadeIn 0.3s; }
+        #tabMatrixContent, #tabSingleContent { display: none; flex-direction: column; animation: fadeIn 0.3s; }
         
         .btn-auto { background: linear-gradient(135deg, #10b981, #059669); color: white; font-weight: 900; padding: 16px; border: none; border-radius: 12px; width: 100%; cursor: pointer; margin-bottom: 15px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); font-size: 15px; transition: 0.2s;}
         .btn-auto:active { transform: scale(0.98); }
@@ -43,7 +43,6 @@
         .prize-name { width: 65px; color: var(--text-muted); font-size: 12px; font-weight: 600; padding-top: 6px; }
         .prize-numbers { flex: 1; display: flex; flex-wrap: wrap; gap: 6px; }
         
-        /* HIỆU ỨNG PILL CỰC KHẮT KHE */
         .pill { background: var(--pill-bg); border: 1px solid var(--border-dim); color: #d1d5db; font-family: monospace; font-weight: bold; font-size: 14px; padding: 5px 10px; border-radius: 20px; transition: 0.2s; }
         .pill.vip { border-color: var(--glow-blue); color: #60a5fa; background: rgba(59, 130, 246, 0.1); box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); cursor: pointer; }
         .pill.vip:active { transform: scale(0.95); }
@@ -71,8 +70,6 @@
         .bottom-bar-inner { width: 100%; max-width: 500px; display: flex; }
         .btn-fail { width: 100%; background: var(--fail-color); color: white; border: none; border-radius: 10px; font-weight: 900; padding: 15px 0; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); cursor: pointer; transition: 0.2s;}
         .btn-fail:active { transform: scale(0.98); }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -81,12 +78,12 @@
         <div class="profile-bar">
             <div class="user-info">
                 <div class="avatar">VIP</div>
-                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V8 💎</span></div>
+                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V9 💎</span></div>
             </div>
         </div>
 
         <h1 class="app-title">THẦN TÀI<br>ĐÂU</h1>
-        <p class="app-sub">Hệ thống phân tích 9 quy luật phong thủy KHẮT KHE 100%.</p>
+        <p class="app-sub">Hệ thống phân tích 9 quy luật phong thủy KHỚP 100% APP GỐC.</p>
 
         <div class="tab-container">
             <button class="tab-btn active" id="btnTabSingle" onclick="switchTab('single')">Nhập Số</button>
@@ -120,14 +117,14 @@
 
 <script>
     const rulesConfig = [
-        { id: 'sanh', title: 'Law of Ascension', desc: 'Mạch khí kết nối sảnh 3+. Số 0 tàng hình.', failDesc: 'Chưa đủ điều kiện kết nối mạch số.' },
+        { id: 'sanh', title: 'Law of Ascension', desc: 'Mạch khí kết nối sảnh 3+. Số 0 làm Joker.', failDesc: 'Chưa đủ điều kiện kết nối mạch số.' },
         { id: 'amduong', title: 'Yin-Yang Harmony', desc: '5 số cuối thuần chẵn/lẻ.', failDesc: 'Năng lượng Âm Dương đang hỗn loạn.' },
-        { id: 'batquai', title: 'Bagua Trigram', desc: 'Tỉ lệ Thái Cực cân bằng: 3 Chẵn - 3 Lẻ.', failDesc: 'Sóng năng lượng chưa đạt độ cân bằng.' },
+        { id: 'batquai', title: 'Bagua Trigram Resonance', desc: 'Tỉ lệ Thái Cực cân bằng: 3 Chẵn - 3 Lẻ.', failDesc: 'Sóng năng lượng chưa đạt độ cân bằng.' },
         { id: 'tamtai', title: 'Trinity Recurrence', desc: 'Cấu trúc lặp ABCABC.', failDesc: 'Chưa hình thành vòng lặp Tam Tài.' },
         { id: 'tinhtu', title: 'Twin Star Alignment', desc: 'Cấu trúc AABXXY hoặc ABBXYY.', failDesc: 'Các vì sao tâm linh phân tán.' },
-        { id: 'donganh', title: 'Shoulder Pole', desc: 'Cấu trúc ABAXYX đối xứng.', failDesc: 'Trọng tâm phong thủy lệch trục.' },
-        { id: 'cuucung', title: 'Nine Palaces', desc: 'Số soi gương 2 chiều hoàn hảo.', failDesc: 'Không có sự phản chiếu Cửu Cung.' },
-        { id: 'nguhanh', title: 'Five Elements (VIP)', desc: 'Cặp 2 số lệch +-1, 10, 11 kề nhau.', failDesc: 'Chưa kích hoạt cấu trúc Ngũ Hành.' },
+        { id: 'donganh', title: 'Shoulder Pole of Blessing', desc: 'Cấu trúc ABAXYX đối xứng.', failDesc: 'Trọng tâm phong thủy lệch trục.' },
+        { id: 'cuucung', title: 'Nine Palaces Reflection', desc: 'Số soi gương 2 chiều hoàn hảo.', failDesc: 'Không có sự phản chiếu Cửu Cung.' },
+        { id: 'nguhanh', title: 'Five Elements Synergy (VIP)', desc: 'Cặp 2 số lệch +-1, 10, 11 kề nhau.', failDesc: 'Chưa kích hoạt cấu trúc Ngũ Hành.' },
         { id: 'thandinh', title: 'Deity\'s Convergence', desc: 'Chứa luồng số Thần Tài (39, 79, 68, 86).', failDesc: 'Luồng số phân tán, chưa tụ Thần Dinh.' }
     ];
 
@@ -228,7 +225,6 @@
             const uniqueNums = [...new Set(validNums)];
 
             uniqueNums.forEach(num => {
-                // CHỐT HẠ: LUÔN BƠM ĐỦ 6 SỐ CHO BẢNG MATRIX NHƯNG PHÂN TÍCH TRÊN SỐ ĐÃ BƠM
                 let paddedNum = num.padStart(6, '0');
                 
                 let matchedRules = Object.keys(phanTichSo(paddedNum).active);
@@ -277,7 +273,7 @@
         }
 
         gaugeBox.style.display = "block"; gaugeText.style.display = "block";
-        statusEl.innerText = "Đang chạy Thần Tài Engine V8..."; statusEl.style.color = "var(--glow-gold)";
+        statusEl.innerText = "Đang chạy Thần Tài Engine V9..."; statusEl.style.color = "var(--glow-gold)";
         
         let paddedNum = num.padStart(6, '0');
         let resultObj = phanTichSo(paddedNum); 
@@ -307,26 +303,35 @@
     }
 
     // ====================================================
-    // LÕI ENGINE V8: SIẾT LUẬT CỰC ĐỘ THEO CHUẨN TÀI LIỆU
+    // LÕI ENGINE V9: CHÂN KINH TUYỆT ĐỐI (KHỚP APP ĐỐI THỦ 100%)
     // ====================================================
     function phanTichSo(strNum) {
         let active = {};
         let len = strNum.length;
 
-        // 1. SẢNH RỒNG (SIẾT LUẬT: SỐ 0 BỊ LỌC BỎ, KHÔNG LÀM JOKER)
-        let noZeros = [...new Set(strNum.replace(/0/g, '').split('').map(Number))].sort((a,b)=>a-b);
-        let maxSanh = 1, curr = 1;
-        for(let i=1; i<noZeros.length; i++) {
-            if(noZeros[i] === noZeros[i-1] + 1) {
-                curr++;
-                if(curr > maxSanh) maxSanh = curr;
-            } else {
-                curr = 1;
+        // 1. SẢNH RỒNG (RESTORED JOKER 0 LẮP CHỖ TRỐNG)
+        let zeros = (strNum.match(/0/g) || []).length;
+        let digits = [...new Set(strNum.replace(/0/g, '').split('').map(Number))].sort((a,b)=>a-b);
+        let maxSanh = zeros > 0 ? zeros : 1; 
+
+        if (digits.length > 0) {
+            for (let i = 0; i < digits.length; i++) {
+                let currentZeros = zeros;
+                let currentLen = 1;
+                let expectedNext = digits[i] + 1;
+                for (let j = i + 1; j < digits.length; j++) {
+                    let gap = digits[j] - expectedNext;
+                    if (gap === 0) { currentLen++; expectedNext++; } 
+                    else if (gap > 0 && currentZeros >= gap) { currentZeros -= gap; currentLen += gap + 1; expectedNext = digits[j] + 1; } 
+                    else break;
+                }
+                currentLen += currentZeros; 
+                if (currentLen > maxSanh) maxSanh = currentLen;
             }
         }
         if (maxSanh >= 3) active['sanh'] = true;
 
-        // 2. ÂM DƯƠNG (SIẾT LUẬT: ÉP SOI 5 SỐ CUỐI, BỎ QUA 0)
+        // 2. ÂM DƯƠNG (ÉP SOI 5 SỐ CUỐI, GỌT SỐ 0, PHẢI FULL CHẴN HOẶC LẺ)
         if(len >= 5) {
             let last5 = strNum.slice(-5).replace(/0/g, '');
             if(last5.length > 0) {
@@ -338,7 +343,7 @@
             }
         }
 
-        // 3. BÁT QUÁI (3 CHẴN - 3 LẺ)
+        // 3. BÁT QUÁI (CHÍNH XÁC 3 CHẴN - 3 LẺ TRÊN CHUỖI 6 SỐ)
         if(len === 6) {
             let evens = 0, odds = 0;
             for(let char of strNum) {
@@ -347,13 +352,12 @@
             if(evens === 3 && odds === 3) active['batquai'] = true;
         }
 
-        // 4. NGŨ HÀNH (SIẾT LUẬT: +-1, 10, 11 CHỈ TÍNH TRÊN CẶP 2 SỐ, KHÔNG TÍNH SỐ LẺ)
+        // 4. NGŨ HÀNH (KHẮT KHE: +-1, 10, 11 CHỈ TÍNH TRÊN CẶP 2 SỐ)
         let nguhanhMatched = false;
         if(len >= 4) {
             for(let i=0; i<=len-4; i++) {
                 let n1 = parseInt(strNum.substring(i, i+2));
                 let n2_adj = parseInt(strNum.substring(i+2, i+4)); // Cặp liền kề
-                
                 let diff1 = Math.abs(n1 - n2_adj);
                 if(diff1 === 1 || diff1 === 10 || diff1 === 11) { nguhanhMatched = true; break; }
                 
