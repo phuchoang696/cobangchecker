@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>THẦN TÀI ĐÂU - SECRET ENGINE V16</title>
+    <title>THẦN TÀI ĐÂU - SECRET ENGINE V17</title>
     <style>
         :root {
             --bg-color: #0b101a; --card-bg: #121827; --pill-bg: #090e17; --border-dim: #1f2937;
@@ -78,12 +78,12 @@
         <div class="profile-bar">
             <div class="user-info">
                 <div class="avatar">VIP</div>
-                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V16 💎</span></div>
+                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V17 💎</span></div>
             </div>
         </div>
 
         <h1 class="app-title">THẦN TÀI<br>ĐÂU</h1>
-        <p class="app-sub">Hệ thống phân tích 9 quy luật phong thủy. (Hiển thị Toàn Bộ Vé Khớp).</p>
+        <p class="app-sub">Hệ thống phân tích 9 quy luật phong thủy. (Tự động cào data chống nghẽn mạng).</p>
 
         <div class="tab-container">
             <button class="tab-btn active" id="btnTabSingle" onclick="switchTab('single')">Nhập Số</button>
@@ -111,7 +111,7 @@
 
     <div class="bottom-bar">
         <div class="bottom-bar-inner">
-            <button class="btn-fail" onclick="location.reload()">MÃI ĐÉO THÀNH CÔNG (TẢI LẠI)</button>
+            <button class="btn-fail" onclick="location.reload()">MÃI ĐÉO THÀNH CÔNG (TẢI LẠI MẠNG)</button>
         </div>
     </div>
 
@@ -149,26 +149,41 @@
 
     async function autoFetchData() {
         const btn = document.getElementById("btnAutoFetch");
-        btn.innerText = "⏳ ĐANG PHÁ TƯỜNG LỬA LẤY DATA...";
+        btn.innerText = "⏳ ĐANG PHÁ TƯỜNG LỬA LẤY DATA (CHỜ 10S)...";
         btn.style.opacity = "0.7"; btn.style.pointerEvents = "none";
 
         const targetUrl = "https://xskt.com.vn/xsmn";
+        
+        // HỆ THỐNG PROXY BẠCH TUỘC ĐA XÚC TU
         const proxies = [
-            "https://api.allorigins.win/raw?url=", 
-            "https://corsproxy.io/?",              
-            "https://api.codetabs.com/v1/proxy?quest=" 
+            { url: "https://api.allorigins.win/get?url=", type: "json" },
+            { url: "https://api.codetabs.com/v1/proxy?quest=", type: "text" },
+            { url: "https://corsproxy.io/?", type: "text" }
         ];
 
         let htmlText = null;
+
         for (let proxy of proxies) {
             try {
-                let res = await fetch(proxy + encodeURIComponent(targetUrl));
-                if (res.ok) { htmlText = await res.text(); break; }
-            } catch(e) { console.log("Chuyển proxy..."); }
+                let res = await fetch(proxy.url + encodeURIComponent(targetUrl));
+                if (res.ok) { 
+                    if (proxy.type === "json") {
+                        let data = await res.json();
+                        htmlText = data.contents;
+                    } else {
+                        htmlText = await res.text(); 
+                    }
+                    
+                    // Xác nhận lấy đúng html xổ số
+                    if (htmlText && htmlText.toLowerCase().includes('giải')) break; 
+                }
+            } catch(e) { 
+                console.log("Cổng proxy bị chặn, đang đổi cổng..."); 
+            }
         }
 
-        if (!htmlText) {
-            alert("Mạng lag. Mày paste tay số liệu vào ô nha!");
+        if (!htmlText || !htmlText.toLowerCase().includes('giải')) {
+            alert("⚠️ Cả 4 Cổng Proxy đều bị nhà mạng chặn! Mày vui lòng vào web xskt.com.vn/xsmn copy bảng xổ số rồi DÁN TAY VÀO Ô nhé!");
             btn.innerText = "🤖 THỬ CÀO LẠI DATA";
             document.getElementById("soVe").style.display = "block";
             document.getElementById("btnAction").style.display = "block";
@@ -179,8 +194,19 @@
         try {
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlText, "text/html");
-            const table = doc.getElementById('MN0') || doc.querySelector('table');
-            if(!table) throw new Error("Không tìm thấy bảng");
+            let table = doc.getElementById('MN0');
+            
+            // Xử lý trường hợp trang web đổi ID bảng
+            if(!table) {
+                const tables = doc.querySelectorAll('table');
+                for(let t of tables) {
+                    if(t.innerText.includes('Đặc biệt') && t.innerText.includes('Giải tám')) {
+                        table = t; break;
+                    }
+                }
+            }
+
+            if(!table) throw new Error("Không tìm thấy bảng KQXS");
 
             const trs = Array.from(table.querySelectorAll('tr'));
             let headerRowIdx = 0;
@@ -212,14 +238,26 @@
             btn.style.background = "linear-gradient(135deg, #0ea5e9, #0284c7)";
             
         } catch (error) {
-            alert("Lỗi phân tích bảng web.");
-            btn.innerText = "🤖 THỬ LẠI";
+            alert("Lỗi phân tích bảng web. Mày dán tay vào ô giùm nha!");
+            btn.innerText = "🤖 THỬ CÀO LẠI DATA";
+            document.getElementById("soVe").style.display = "block";
+            document.getElementById("btnAction").style.display = "block";
         }
         
         btn.style.opacity = "1"; btn.style.pointerEvents = "auto";
     }
 
-    // HIỂN THỊ THÔNG BÁO KHI BẤM VÀO VÉ KHỚP TRÊN BẢNG ĐÀI
+    // Function hỗ trợ phân tích khi nhập tay (Paste)
+    function quetBangMatrix() {
+        let val = document.getElementById("soVe").value.trim().replace(/[.,]/g, '');
+        const rawNums = val.match(/\b\d{2,6}\b/g);
+        if (!rawNums) { alert("Dán gì vô ô đó ba, dán lại đi!"); return; }
+        
+        document.getElementById("soVe").style.display = "none";
+        document.getElementById("btnAction").style.display = "none";
+        renderMatrixBoards([{ name: 'KẾT QUẢ TỔNG HỢP', nums: rawNums }]);
+    }
+
     function showMatchedRules(num, rulesArrayStr) {
         let rulesArr = JSON.parse(rulesArrayStr);
         let rulesNames = rulesArr.map(id => {
@@ -252,7 +290,6 @@
                 let pObj = phanTichSo(cleanNum).active;
                 let matchedRules = Object.keys(pObj);
                 
-                // YÊU CẦU CỦA CHỦ TỊCH: PHÁT SÁNG TOÀN BỘ VÉ KHỚP (KỂ CẢ SẢNH, BÁT QUÁI, ÂM DƯƠNG)
                 let isMatched = matchedRules.length > 0;
                 let paddedNum = cleanNum.padStart(6, '0');
                 
@@ -295,7 +332,7 @@
         }
 
         gaugeBox.style.display = "block"; gaugeText.style.display = "block";
-        statusEl.innerText = "Đang chạy Thần Tài Engine V16..."; statusEl.style.color = "var(--glow-gold)";
+        statusEl.innerText = "Đang chạy Thần Tài Engine V17..."; statusEl.style.color = "var(--glow-gold)";
         
         let resultObj = phanTichSo(num); 
         let pObj = resultObj.active;
@@ -327,7 +364,7 @@
     }
 
     // ====================================================
-    // LÕI V16: NGŨ HÀNH (+-1) CHUẨN CỤM 2 SỐ & SUY LUẬN SỐ ẨN
+    // LÕI V17: BẢN GIỮ CHUẨN MỌI LOGIC V16
     // ====================================================
     function phanTichSo(strNum) {
         let active = {};
@@ -369,18 +406,16 @@
             if(evens === 3 && odds === 3) active['batquai'] = true;
         }
 
-        // 4. NGŨ HÀNH (+-1, 10, 11) -> ÁP DỤNG TRÊN CỤM 2 SỐ NHƯ CHỦ TỊCH DẠY
+        // 4. NGŨ HÀNH (+-1, 10, 11) -> TRÊN CỤM 2 SỐ
         let nguhanhMatched = false;
         if(len >= 4) {
             for(let i=0; i<=len-4; i++) {
                 let n1 = parseInt(strNum.substring(i, i+2));
                 
-                // So với cụm liền kề
                 let n2_adj = parseInt(strNum.substring(i+2, i+4)); 
                 let diff1 = Math.abs(n1 - n2_adj);
                 if(diff1 === 1 || diff1 === 10 || diff1 === 11) { nguhanhMatched = true; break; }
                 
-                // So với cụm cách 1 số ẩn (ví dụ: 35-5-46)
                 if(i+5 <= len) {
                     let n2_sep = parseInt(strNum.substring(i+3, i+5)); 
                     let diff2 = Math.abs(n1 - n2_sep);
