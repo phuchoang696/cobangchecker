@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>THẦN TÀI ĐÂU - SECRET ENGINE V34</title>
+    <title>THẦN TÀI ĐÂU - SECRET ENGINE V35</title>
     <style>
         :root {
             --bg-color: #0b101a; --card-bg: #121827; --pill-bg: #090e17; --border-dim: #1f2937;
@@ -82,12 +82,12 @@
         <div class="profile-bar">
             <div class="user-info">
                 <div class="avatar">VIP</div>
-                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V34 💎</span></div>
+                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V35 💎</span></div>
             </div>
         </div>
 
         <h1 class="app-title">THẦN TÀI<br>ĐÂU</h1>
-        <p class="app-sub">Phiên bản Tử Chiến - Bóc Tách Rubik 100%.</p>
+        <p class="app-sub">Bản Tối Thượng Tích Hợp Máy Chủ Google.</p>
         
         <div class="date-display" id="dateDisplay">Date: --/--/----</div>
 
@@ -108,7 +108,7 @@
         </div>
 
         <div id="tabMatrixContent">
-            <button class="btn-auto" id="btnAutoFetch" onclick="autoFetchData()">🚀 BẮT ĐẦU CÀO DATA</button>
+            <button class="btn-auto" id="btnAutoFetch" onclick="autoFetchData()">🚀 LẤY DATA (MÁY CHỦ GOOGLE)</button>
             
             <textarea id="soVe" placeholder="NẾU CẦN THIẾT: Dán kết quả xổ số vào đây..."></textarea>
             <button class="btn-action" id="btnAction" onclick="quetBangMatrix()">🔍 PHÂN TÍCH DATA DÁN TAY</button>
@@ -124,6 +124,14 @@
     </div>
 
 <script>
+    // ==========================================
+    // ĐÂY LÀ CHỖ QUAN TRỌNG NHẤT!!!!
+    // MÀY XÓA CÁI DÒNG BÊN TRONG NGOẶC KÉP, RỒI DÁN CÁI LINK GOOGLE CỦA MÀY VÀO ĐÂY:
+    // ==========================================
+    const GOOGLE_API_URL = "https://script.google.com/macros/s/AKfycbyGhEX9vPJuQQnIUfHQ0mwnSmi247vTD9mamVXvnGgKfqoOqQVkwrU6Y3ImjzAyzQce3g/exec"; 
+    // Ví dụ: const GOOGLE_API_URL = "https://script.google.com/macros/s/AKfycby.../exec";
+
+
     const rulesConfig = [
         { id: 'sanh', title: 'Law of Ascension', desc: 'Mạch khí kết nối sảnh 3+. Số ẩn Joker suy luận.', failDesc: 'Chưa đủ điều kiện kết nối mạch số.' },
         { id: 'amduong', title: 'Yin-Yang Harmony', desc: '5 số cuối thuần chẵn/lẻ.', failDesc: 'Năng lượng Âm Dương đang hỗn loạn.' },
@@ -165,135 +173,35 @@
     }
 
     // ==========================================
-    // V34: BÓC TÁCH RUBIK RSS - KHÔNG BAO GIỜ TIMEOUT
+    // V35: GỌI DATA TỪ SERVER GOOGLE (100% THÀNH CÔNG)
     // ==========================================
-    function parseRSS(xmlText) {
-        let parser = new DOMParser();
-        let xmlDoc = parser.parseFromString(xmlText, "text/xml");
-        let items = xmlDoc.querySelectorAll("item description");
-        if(items.length === 0) return [];
-        
-        let desc = items[0].textContent;
-        // Bắt buộc phải replace <br> thành \n để không dính nùi số
-        let lines = desc.replace(/<br\s*\/?>/gi, '\n').split('\n').filter(l => l.trim() !== '');
-        
-        let stationNames = lines[0].split('-');
-        let stations = stationNames.map(n => ({ name: "STATION " + n.trim().toUpperCase(), nums: [] }));
-        
-        for(let i=1; i<lines.length; i++) {
-            let line = lines[i];
-            if (!line.includes(':')) continue;
-            let parts = line.split(':');
-            let prizeVals = parts[1].split('-'); 
-            for(let j=0; j<prizeVals.length; j++) {
-                if(stations[j]) {
-                    let nums = prizeVals[j].match(/\b\d{2,6}\b/g) || [];
-                    // Gắn vào đầu mảng để nó lật ngược từ Đặc Biệt xuống Giải Tám cho đúng thứ tự
-                    stations[j].nums = nums.concat(stations[j].nums);
-                }
-            }
-        }
-        return stations.filter(s => s.nums.length >= 18);
-    }
-
-    function parseHTML(htmlText) {
-        let parser = new DOMParser();
-        let doc = parser.parseFromString(htmlText, "text/html");
-        
-        let tables = Array.from(doc.querySelectorAll('table'));
-        let resultTable = tables.find(t => t.innerText.includes('Đặc biệt') && t.innerText.includes('Giải tám'));
-        if(!resultTable) return [];
-        
-        let trs = Array.from(resultTable.querySelectorAll('tr'));
-        let headerRow = trs.find(tr => tr.innerText.toLowerCase().includes('giải'));
-        if(!headerRow) return [];
-        
-        let headerIndex = trs.indexOf(headerRow);
-        let ths = Array.from(headerRow.querySelectorAll('th, td'));
-        let stations = [];
-        for(let i=1; i<ths.length; i++) {
-            let name = ths[i].innerText.trim();
-            if(name && !name.toLowerCase().includes('đài') && !name.toLowerCase().includes('tỉnh')) {
-                stations.push({ name: "STATION " + name.toUpperCase(), nums: [] });
-            }
-        }
-        
-        for(let i=headerIndex+1; i<trs.length; i++) {
-            let cells = Array.from(trs[i].querySelectorAll('td'));
-            if(cells.length > 1) {
-                let dataCells = cells.slice(-stations.length);
-                dataCells.forEach((cell, index) => {
-                    if(stations[index]) {
-                        let txt = cell.innerHTML.replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]*>/g, ' ');
-                        let nums = txt.match(/\b\d{2,6}\b/g) || [];
-                        stations[index].nums.push(...nums);
-                    }
-                });
-            }
-        }
-        return stations.filter(s => s.nums.length >= 18);
-    }
-
     async function autoFetchData() {
+        if(GOOGLE_API_URL === "DÁN_LINK_GOOGLE_CỦA_MÀY_VÀO_ĐÂY") {
+            alert("Đại ca quên chưa dán link Google vào code kìa! Quay lại GitHub sửa ngay!");
+            return;
+        }
+
         const btn = document.getElementById("btnAutoFetch");
-        btn.innerText = "⏳ ĐANG PHÂN TÍCH... (MẠNG CHẬM THÌ CHỜ CHÚT)";
+        btn.innerText = "⏳ ĐANG HÚT DATA TỪ GOOGLE...";
         btn.style.opacity = "0.7"; btn.style.pointerEvents = "none";
 
-        const proxies = [
-            { url: "https://api.allorigins.win/get?url=", type: "json" },
-            { url: "https://api.codetabs.com/v1/proxy?quest=", type: "text" },
-            { url: "https://corsproxy.io/?", type: "text" }
-        ];
-        
-        const targets = [
-            { url: "https://xskt.com.vn/rss/mien-nam.rss", isRss: true },
-            { url: "https://xskt.com.vn/xsmn", isRss: false }
-        ];
-
-        let stationsData = [];
-
-        // ĐÉO CÓ THÊM MỘT CÁI TIMEOUT NÀO Ở ĐÂY NỮA, ĐỂ NÓ CHẠY CHẬM MÀ CHẮC!
-        for (let target of targets) {
-            for (let proxy of proxies) {
-                try {
-                    let fetchUrl = proxy.url + encodeURIComponent(target.url);
-                    let res = await fetch(fetchUrl);
-                    if (!res.ok) continue;
-                    
-                    let textData = "";
-                    if (proxy.type === "json") {
-                        let data = await res.json();
-                        textData = data.contents;
-                    } else {
-                        textData = await res.text();
-                    }
-
-                    if (!textData) continue;
-
-                    if (target.isRss) {
-                        stationsData = parseRSS(textData);
-                    } else {
-                        stationsData = parseHTML(textData);
-                    }
-
-                    if (stationsData.length >= 1) {
-                        break; 
-                    }
-                } catch(e) {
-                    console.log("Cổng proxy bị đứt, đổi cổng...");
-                }
+        try {
+            // Nhờ uy tín của Google, lệnh fetch này iOS đéo bao giờ dám chặn!
+            let response = await fetch(GOOGLE_API_URL);
+            let json = await response.json();
+            
+            if (json.status === 'success' && json.data && json.data.length > 0) {
+                document.getElementById("soVe").style.display = "none";
+                document.getElementById("btnAction").style.display = "none";
+                renderMatrixBoards(json.data);
+                
+                btn.innerText = "✅ THẦN TÀI ĐÃ GỌI DATA VỀ";
+                btn.style.background = "linear-gradient(135deg, #0ea5e9, #0284c7)";
+            } else {
+                throw new Error("Lỗi Server Google");
             }
-            if (stationsData.length >= 1) break;
-        }
-
-        if (stationsData.length >= 1) {
-            document.getElementById("soVe").style.display = "none";
-            document.getElementById("btnAction").style.display = "none";
-            renderMatrixBoards(stationsData);
-            btn.innerText = "✅ THẦN TÀI ĐÃ GỌI DATA VỀ";
-            btn.style.background = "linear-gradient(135deg, #0ea5e9, #0284c7)";
-        } else {
-            btn.innerText = "❌ MẠNG CHẶN KÍN! DÁN BẢNG VÀO Ô DƯỚI 👇";
+        } catch (error) {
+            btn.innerText = "❌ LỖI RỒI! DÁN TAY VÀO Ô DƯỚI 👇";
             btn.style.background = "linear-gradient(135deg, #ef4444, #b91c1c)";
             document.getElementById("soVe").style.display = "block";
             document.getElementById("btnAction").style.display = "block";
@@ -313,7 +221,6 @@
         document.getElementById("btnAutoFetch").style.display = "none";
         
         let stationsData = [];
-        
         if (rawNums.length >= 18 && rawNums.length % 18 === 0) {
             let numStations = rawNums.length / 18;
             for(let s = 0; s < numStations; s++) {
@@ -363,8 +270,6 @@
                 let matchedRules = Object.keys(pObj);
                 
                 let isMatched = matchedRules.length > 0;
-                
-                // BOM SỐ 0 ĐỂ HIỂN THỊ ĐỦ 6 SỐ SANG CHẢNH NHƯ ĐỐI THỦ
                 let paddedNum = cleanNum.padStart(6, '0');
                 
                 let rulesJson = isMatched ? JSON.stringify(matchedRules).replace(/"/g, '&quot;') : '[]';
@@ -406,7 +311,7 @@
         }
 
         gaugeBox.style.display = "block"; gaugeText.style.display = "block";
-        statusEl.innerText = "Đang chạy Thần Tài Engine V34..."; statusEl.style.color = "var(--glow-gold)";
+        statusEl.innerText = "Đang chạy Thần Tài Engine V35..."; statusEl.style.color = "var(--glow-gold)";
         
         let resultObj = phanTichSo(num); 
         let pObj = resultObj.active;
