@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>THẦN TÀI ĐÂU - SECRET ENGINE V40</title>
+    <title>THẦN TÀI ĐÂU - SECRET ENGINE V41</title>
     <style>
         :root {
             --bg-color: #0b101a; --card-bg: #121827; --pill-bg: #090e17; --border-dim: #1f2937;
@@ -82,12 +82,12 @@
         <div class="profile-bar">
             <div class="user-info">
                 <div class="avatar">VIP</div>
-                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V40 🏆</span></div>
+                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V41 🚀</span></div>
             </div>
         </div>
 
         <h1 class="app-title">THẦN TÀI<br>ĐÂU</h1>
-        <p class="app-sub">Đường Hầm Cloudflare Kích Hoạt. Chấp mọi loại Khiên.</p>
+        <p class="app-sub">Kết nối thẳng máy chủ Google. 100% Chống Chặn.</p>
         
         <div class="date-display" id="dateDisplay">Date: --/--/----</div>
 
@@ -108,7 +108,7 @@
         </div>
 
         <div id="tabMatrixContent">
-            <button class="btn-auto" id="btnAutoFetch" onclick="autoFetchVPS()">🚀 LẤY DATA VỚI TỐC ĐỘ BÀN THỜ</button>
+            <button class="btn-auto" id="btnAutoFetch" onclick="autoFetchGoogle()">🚀 LẤY DATA BẰNG MÁY CHỦ GOOGLE</button>
             
             <textarea id="soVe" placeholder="NẾU CẦN THIẾT: Dán kết quả xổ số vào đây..."></textarea>
             <button class="btn-action" id="btnAction" onclick="quetBangMatrix()">🔍 PHÂN TÍCH DATA DÁN TAY</button>
@@ -125,8 +125,11 @@
 
 <script>
 
-    // ĐÃ GẮN SẴN LINK CLOUDFLARE VIP CỦA ĐẠI CA VÀO ĐÂY!
-    const MY_VPS_API = "https://cigarettes-consequences-fourth-brochures.trycloudflare.com/api/lay-so"; 
+    // ==========================================
+    // DÁN LINK GOOGLE CỦA MÀY VÀO ĐÂY (Nằm giữa 2 dấu ngoặc kép)
+    // Ví dụ: const MY_GOOGLE_API = "https://script.google.com/macros/s/AKfycb.../exec";
+    // ==========================================
+    const MY_GOOGLE_API = "https://script.google.com/macros/s/AKfycbzL5B040JdWavkjvlk7TOdAVSiRbENrAMHjZDslh5iYylgzS11ivLOnnWAkwgBmMoOY/exec"; 
 
 
     const rulesConfig = [
@@ -169,15 +172,20 @@
         }
     }
 
-    async function autoFetchVPS() {
+    async function autoFetchGoogle() {
+        if(MY_GOOGLE_API.includes("DÁN_LINK_GOOGLE_VÀO_ĐÂY")) {
+            alert("Đại ca chưa dán link Google vào code kìa!");
+            return;
+        }
+
         const btn = document.getElementById("btnAutoFetch");
-        btn.innerText = "⏳ ĐANG RÚT DATA TỪ VPS CỦA MÀY...";
+        btn.innerText = "⏳ GOOGLE ĐANG CÀO SỐ, CHỜ TÝ ĐẠI CA...";
         btn.style.opacity = "0.7";
         btn.style.pointerEvents = "none";
 
         try {
-            // Lệnh Fetch siêu cấp qua hầm Cloudflare
-            let response = await fetch(MY_VPS_API);
+            // Lệnh Fetch tới máy chủ Google, chúa tể muôn loài đéo ai dám chặn
+            let response = await fetch(MY_GOOGLE_API);
             let json = await response.json();
             
             if (json.status === 'success' && json.data && json.data.length > 0) {
@@ -185,13 +193,13 @@
                 document.getElementById("btnAction").style.display = "none";
                 renderMatrixBoards(json.data);
                 
-                btn.innerText = "✅ VPS ĐÃ BƠM DATA VỀ MƯỢT MÀ";
+                btn.innerText = "✅ GOOGLE ĐÃ BƠM DATA VỀ THÀNH CÔNG";
                 btn.style.background = "linear-gradient(135deg, #0ea5e9, #0284c7)";
             } else {
-                throw new Error("Lỗi Server VPS");
+                throw new Error("Lỗi Server Google");
             }
         } catch (error) {
-            btn.innerText = "❌ VPS ĐỨT MẠNG! DÁN TAY VÀO Ô DƯỚI 👇";
+            btn.innerText = "❌ GOOGLE CŨNG ĐỨT! DÁN TAY VÀO Ô DƯỚI 👇";
             btn.style.background = "linear-gradient(135deg, #ef4444, #b91c1c)";
             document.getElementById("soVe").style.display = "block";
             document.getElementById("btnAction").style.display = "block";
