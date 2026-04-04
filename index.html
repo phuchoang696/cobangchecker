@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>THẦN TÀI ĐÂU - SECRET ENGINE V41</title>
+    <title>THẦN TÀI ĐÂU - SECRET ENGINE V42</title>
     <style>
         :root {
             --bg-color: #0b101a; --card-bg: #121827; --pill-bg: #090e17; --border-dim: #1f2937;
@@ -82,12 +82,12 @@
         <div class="profile-bar">
             <div class="user-info">
                 <div class="avatar">VIP</div>
-                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V41 🚀</span></div>
+                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V42 🚀</span></div>
             </div>
         </div>
 
         <h1 class="app-title">THẦN TÀI<br>ĐÂU</h1>
-        <p class="app-sub">Kết nối thẳng máy chủ Google. 100% Chống Chặn.</p>
+        <p class="app-sub">Tuyệt kỹ Lỗ Chó JSONP. Bất tử với CSP Telegram.</p>
         
         <div class="date-display" id="dateDisplay">Date: --/--/----</div>
 
@@ -108,7 +108,7 @@
         </div>
 
         <div id="tabMatrixContent">
-            <button class="btn-auto" id="btnAutoFetch" onclick="autoFetchGoogle()">🚀 LẤY DATA BẰNG MÁY CHỦ GOOGLE</button>
+            <button class="btn-auto" id="btnAutoFetch" onclick="autoFetchJSONP()">🚀 LẤY DATA (CHUI LỖ CHÓ)</button>
             
             <textarea id="soVe" placeholder="NẾU CẦN THIẾT: Dán kết quả xổ số vào đây..."></textarea>
             <button class="btn-action" id="btnAction" onclick="quetBangMatrix()">🔍 PHÂN TÍCH DATA DÁN TAY</button>
@@ -126,10 +126,9 @@
 <script>
 
     // ==========================================
-    // DÁN LINK GOOGLE CỦA MÀY VÀO ĐÂY (Nằm giữa 2 dấu ngoặc kép)
-    // Ví dụ: const MY_GOOGLE_API = "https://script.google.com/macros/s/AKfycb.../exec";
+    // DÁN LINK GOOGLE CỦA MÀY VÀO ĐÂY LẦN CUỐI CÙNG
     // ==========================================
-    const MY_GOOGLE_API = "https://script.google.com/macros/s/AKfycbzL5B040JdWavkjvlk7TOdAVSiRbENrAMHjZDslh5iYylgzS11ivLOnnWAkwgBmMoOY/exec"; 
+    const MY_GOOGLE_API = "DÁN_LINK_GOOGLE_VÀO_ĐÂY"; 
 
 
     const rulesConfig = [
@@ -172,38 +171,50 @@
         }
     }
 
-    async function autoFetchGoogle() {
+    // TUYỆT KỸ JSONP: ĐÉO DÙNG FETCH NỮA!
+    function autoFetchJSONP() {
         if(MY_GOOGLE_API.includes("DÁN_LINK_GOOGLE_VÀO_ĐÂY")) {
-            alert("Đại ca chưa dán link Google vào code kìa!");
+            alert("Đại ca chưa dán link Google kìa!");
             return;
         }
 
         const btn = document.getElementById("btnAutoFetch");
-        btn.innerText = "⏳ GOOGLE ĐANG CÀO SỐ, CHỜ TÝ ĐẠI CA...";
+        btn.innerText = "⏳ ĐANG CHUI LỖ CHÓ JSONP LÁCH TELEGRAM...";
         btn.style.opacity = "0.7";
         btn.style.pointerEvents = "none";
 
-        try {
-            // Lệnh Fetch tới máy chủ Google, chúa tể muôn loài đéo ai dám chặn
-            let response = await fetch(MY_GOOGLE_API);
-            let json = await response.json();
-            
-            if (json.status === 'success' && json.data && json.data.length > 0) {
-                document.getElementById("soVe").style.display = "none";
-                document.getElementById("btnAction").style.display = "none";
-                renderMatrixBoards(json.data);
-                
-                btn.innerText = "✅ GOOGLE ĐÃ BƠM DATA VỀ THÀNH CÔNG";
-                btn.style.background = "linear-gradient(135deg, #0ea5e9, #0284c7)";
-            } else {
-                throw new Error("Lỗi Server Google");
-            }
-        } catch (error) {
-            btn.innerText = "❌ GOOGLE CŨNG ĐỨT! DÁN TAY VÀO Ô DƯỚI 👇";
+        let script = document.createElement('script');
+        let joinChar = MY_GOOGLE_API.includes('?') ? '&' : '?';
+        // Gắn callback để Google trả về dưới dạng file Script
+        script.src = MY_GOOGLE_API + joinChar + "callback=nhanDataTuGoogle";
+        
+        script.onerror = function() {
+            btn.innerText = "❌ LỖ CHÓ BỊ LẤP! DÁN TAY VÀO Ô DƯỚI 👇";
             btn.style.background = "linear-gradient(135deg, #ef4444, #b91c1c)";
             document.getElementById("soVe").style.display = "block";
             document.getElementById("btnAction").style.display = "block";
-            console.log(error);
+            btn.style.opacity = "1";
+            btn.style.pointerEvents = "auto";
+        };
+
+        document.body.appendChild(script);
+    }
+
+    // Hàm này sẽ tự động được chạy khi data từ Google chui qua thành công
+    function nhanDataTuGoogle(json) {
+        const btn = document.getElementById("btnAutoFetch");
+        if (json && json.status === 'success' && json.data && json.data.length > 0) {
+            document.getElementById("soVe").style.display = "none";
+            document.getElementById("btnAction").style.display = "none";
+            renderMatrixBoards(json.data);
+            
+            btn.innerText = "✅ THÀNH CÔNG! TELEGRAM ĐÃ BỊ QUA MẶT!";
+            btn.style.background = "linear-gradient(135deg, #0ea5e9, #0284c7)";
+        } else {
+            btn.innerText = "❌ LỖI RỒI! DÁN TAY VÀO Ô DƯỚI 👇";
+            btn.style.background = "linear-gradient(135deg, #ef4444, #b91c1c)";
+            document.getElementById("soVe").style.display = "block";
+            document.getElementById("btnAction").style.display = "block";
         }
         btn.style.opacity = "1";
         btn.style.pointerEvents = "auto";
