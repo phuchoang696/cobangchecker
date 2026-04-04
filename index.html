@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>THẦN TÀI ĐÂU - SECRET ENGINE V37</title>
+    <title>THẦN TÀI ĐÂU - SECRET ENGINE V38</title>
     <style>
         :root {
             --bg-color: #0b101a; --card-bg: #121827; --pill-bg: #090e17; --border-dim: #1f2937;
@@ -82,12 +82,12 @@
         <div class="profile-bar">
             <div class="user-info">
                 <div class="avatar">VIP</div>
-                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V37 🚀</span></div>
+                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V38 💎</span></div>
             </div>
         </div>
 
         <h1 class="app-title">THẦN TÀI<br>ĐÂU</h1>
-        <p class="app-sub">Kết nối thẳng VPS. Đã fix lỗi liệt Tab.</p>
+        <p class="app-sub">Đã bẻ khóa khiên ngrok. Đỉnh cao chóp bu!</p>
         
         <div class="date-display" id="dateDisplay">Date: --/--/----</div>
 
@@ -125,7 +125,6 @@
 
 <script>
 
-    // ĐÃ GẮN SẴN LINK NGROK VPS CỦA MÀY, ĐÉO CẦN SỬA GÌ NỮA HẾT!
     const MY_VPS_API = "https://water-tinley-reprobatively.ngrok-free.dev/api/lay-so"; 
 
     const rulesConfig = [
@@ -174,8 +173,13 @@
         btn.style.opacity = "0.7"; btn.style.pointerEvents = "none";
 
         try {
-            // Gọi qua link ngrok bảo mật, thách cả cụ tổ Telegram dám chặn
-            let response = await fetch(MY_VPS_API);
+            // ĐÂY CHÍNH LÀ THẺ BÀI MIỄN TỬ ĐỂ BỎ QUA CÁI BẢNG CẢNH BÁO CỦA NGROK!
+            let response = await fetch(MY_VPS_API, {
+                headers: {
+                    "ngrok-skip-browser-warning": "69420"
+                }
+            });
+            
             let json = await response.json();
             
             if (json.status === 'success' && json.data && json.data.length > 0) {
@@ -193,6 +197,7 @@
             btn.style.background = "linear-gradient(135deg, #ef4444, #b91c1c)";
             document.getElementById("soVe").style.display = "block";
             document.getElementById("btnAction").style.display = "block";
+            console.log(error);
         }
         btn.style.opacity = "1"; btn.style.pointerEvents = "auto";
     }
