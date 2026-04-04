@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>THẦN TÀI ĐÂU - SECRET ENGINE V38</title>
+    <title>THẦN TÀI ĐÂU - SECRET ENGINE V40</title>
     <style>
         :root {
             --bg-color: #0b101a; --card-bg: #121827; --pill-bg: #090e17; --border-dim: #1f2937;
@@ -82,12 +82,12 @@
         <div class="profile-bar">
             <div class="user-info">
                 <div class="avatar">VIP</div>
-                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V38 💎</span></div>
+                <div><p class="user-name">Thần Tài Đâu</p><span class="tier-badge">SECRET ENGINE V40 🏆</span></div>
             </div>
         </div>
 
         <h1 class="app-title">THẦN TÀI<br>ĐÂU</h1>
-        <p class="app-sub">Đã bẻ khóa khiên ngrok. Đỉnh cao chóp bu!</p>
+        <p class="app-sub">Đường Hầm Cloudflare Kích Hoạt. Chấp mọi loại Khiên.</p>
         
         <div class="date-display" id="dateDisplay">Date: --/--/----</div>
 
@@ -108,7 +108,7 @@
         </div>
 
         <div id="tabMatrixContent">
-            <button class="btn-auto" id="btnAutoFetch" onclick="autoFetchVPS()">🚀 LẤY DATA (TỪ VPS RIÊNG)</button>
+            <button class="btn-auto" id="btnAutoFetch" onclick="autoFetchVPS()">🚀 LẤY DATA VỚI TỐC ĐỘ BÀN THỜ</button>
             
             <textarea id="soVe" placeholder="NẾU CẦN THIẾT: Dán kết quả xổ số vào đây..."></textarea>
             <button class="btn-action" id="btnAction" onclick="quetBangMatrix()">🔍 PHÂN TÍCH DATA DÁN TAY</button>
@@ -125,7 +125,9 @@
 
 <script>
 
-    const MY_VPS_API = "https://water-tinley-reprobatively.ngrok-free.dev/api/lay-so"; 
+    // ĐÃ GẮN SẴN LINK CLOUDFLARE VIP CỦA ĐẠI CA VÀO ĐÂY!
+    const MY_VPS_API = "https://cigarettes-consequences-fourth-brochures.trycloudflare.com/api/lay-so"; 
+
 
     const rulesConfig = [
         { id: 'sanh', title: 'Law of Ascension', desc: 'Mạch khí kết nối sảnh 3+. Số ẩn Joker suy luận.', failDesc: 'Chưa đủ điều kiện kết nối mạch số.' },
@@ -170,16 +172,12 @@
     async function autoFetchVPS() {
         const btn = document.getElementById("btnAutoFetch");
         btn.innerText = "⏳ ĐANG RÚT DATA TỪ VPS CỦA MÀY...";
-        btn.style.opacity = "0.7"; btn.style.pointerEvents = "none";
+        btn.style.opacity = "0.7";
+        btn.style.pointerEvents = "none";
 
         try {
-            // ĐÂY CHÍNH LÀ THẺ BÀI MIỄN TỬ ĐỂ BỎ QUA CÁI BẢNG CẢNH BÁO CỦA NGROK!
-            let response = await fetch(MY_VPS_API, {
-                headers: {
-                    "ngrok-skip-browser-warning": "69420"
-                }
-            });
-            
+            // Lệnh Fetch siêu cấp qua hầm Cloudflare
+            let response = await fetch(MY_VPS_API);
             let json = await response.json();
             
             if (json.status === 'success' && json.data && json.data.length > 0) {
@@ -193,13 +191,14 @@
                 throw new Error("Lỗi Server VPS");
             }
         } catch (error) {
-            btn.innerText = "❌ VPS CHƯA BẬT HOẶC ĐỨT! DÁN TAY VÀO Ô DƯỚI 👇";
+            btn.innerText = "❌ VPS ĐỨT MẠNG! DÁN TAY VÀO Ô DƯỚI 👇";
             btn.style.background = "linear-gradient(135deg, #ef4444, #b91c1c)";
             document.getElementById("soVe").style.display = "block";
             document.getElementById("btnAction").style.display = "block";
             console.log(error);
         }
-        btn.style.opacity = "1"; btn.style.pointerEvents = "auto";
+        btn.style.opacity = "1";
+        btn.style.pointerEvents = "auto";
     }
 
     function quetBangMatrix() {
